@@ -203,7 +203,7 @@ header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between
   <header>
     <div class="brand">
       <h1>쉬는시간 <span>오락실</span></h1>
-      <p>미니게임 14종. 최고 기록을 깨면 랭킹판에 이름이 올라가요.</p>
+      <p>미니게임 14종. 최고 기록을 깨면 모두가 보는 랭킹판에 이름이 올라가요.</p>
     </div>
     <div class="me-box">
       <div class="player">
@@ -307,7 +307,7 @@ function renderRank(){
   if(mode==="shared"&&rankState==="loading"&&!list.length) body=`<div class="empty">랭킹 불러오는 중…</div>`;
   else if(!list.length) body=`<div class="empty">아직 기록이 없어요. 첫 1위를 차지해보세요.</div>`;
   else body=`<ol>${list.map((r,i)=>`<li class="${r.id===myId?"me":""}"><span class="pos">${i+1}</span><span class="who"></span><span class="val">${g.fmt(r[current])}</span></li>`).join("")}</ol>`;
-  const sub = mode==="shared" ? "친구들과 공유 · 실시간 반영" : "이 브라우저에 저장 · 닉네임별 기록";
+  const sub = mode==="shared" ? (backend==="firebase"?"모든 접속자 전체 랭킹 · 실시간":"친구들과 공유 · 실시간 반영") : "이 브라우저에 저장 · 닉네임별 기록";
   el.innerHTML=`<h3>${g.name} 랭킹</h3><p class="sub">${g.lower?"낮을수록":"높을수록"} 좋아요 · ${sub}</p>${body}${best[current]!=null?`<button class="btn ghost share" id="share" type="button">내 기록 복사해서 자랑하기</button>`:""}`;
   const sh=$("#share");if(sh)sh.onclick=shareBest;
   el.querySelectorAll(".who").forEach((w,i)=>{w.textContent=nameOf(list[i])+(list[i].id===myId?" (나)":"")});
@@ -339,7 +339,7 @@ async function saveScore(g,val){
   }
   store.set("arcade.best",best); renderCarts();
   try{
-    await db.doc("scores/"+myId).set({...best,nick,updatedAt:Date.now()});
+    await db.doc("scores/"+myId).set({...best,nick:shownNick(),updatedAt:Date.now()});
     toast(`새 최고 기록! ${G.fmt(val)} 랭킹에 올렸어요`+(nick?"":" · 닉네임을 정해주세요"));
   }catch{toast("랭킹 저장에 실패했어요. 기록은 이 브라우저에 남아 있어요.")}
 }
@@ -352,7 +352,7 @@ async function saveNick(){
     loadLocal(); renderCarts(); renderRank(); restart(); toast(nick?`${nick} 님의 기록으로 전환했어요`:"닉네임을 지웠어요"); return;
   }
   if(Object.keys(best).length){
-    try{await db.doc("scores/"+myId).set({...best,nick,updatedAt:Date.now()});toast("닉네임을 바꿨어요")}catch{toast("닉네임 저장에 실패했어요")}
+    try{await db.doc("scores/"+myId).set({...best,nick:shownNick(),updatedAt:Date.now()});toast("닉네임을 바꿨어요")}catch{toast("닉네임 저장에 실패했어요")}
   }
 }
 nickEl.addEventListener("change",saveNick);
@@ -360,25 +360,65 @@ nickEl.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.isComposing)nickEl.
 $("#game").addEventListener("pointerdown",()=>{if(document.activeElement===nickEl)nickEl.blur()});
 
 /* claude.ai에서 열면 공유 랭킹(db)을 실시간 구독해요 */
+/* 전체 랭킹 서버 (Firebase). 이 설정값은 공개용이라 코드에 들어가도 괜찮아요.
+   누가 무엇을 쓸 수 있는지는 Firestore 보안 규칙이 막아요: 누구나 읽기, 자기 문서만 쓰기. */
+const FB_CONFIG={apiKey:"AIzaSyAk9klcm9hRRT6GHRuj150RPEExGe9D5Qw",authDomain:"arcade-ranking.firebaseapp.com",projectId:"arcade-ranking",storageBucket:"arcade-ranking.firebasestorage.app",messagingSenderId:"175220064917",appId:"1:175220064917:web:0fed0bfe53a5e2b278d19c"};
+let backend="local";
+const shownNick=()=>nick||"플레이어"+String(myId||"").slice(-4);
+
+/* 공유 랭킹 시작: 저장소(store)와 구독 함수(subscribe)만 바꿔 끼우면 claude.ai와 Firebase 둘 다 같은 코드로 동작 */
+function startShared(kind,dbAdapter,id,subscribe){
+  const localBest={...(records[localName()]||{}),...store.get("arcade.best",{})};
+  backend=kind; mode="shared"; db=dbAdapter; myId=id; rankState="loading";
+  best={}; for(const k in localBest) if(typeof localBest[k]==="number") best[k]=localBest[k];
+  rows=[]; renderCarts(); renderRank(); restart();
+  const label=kind==="firebase"?"전체 랭킹":"공유 랭킹";
+  const timer=setTimeout(()=>{if(rankState==="loading")$("#status").textContent="랭킹 서버 응답이 늦어요. 잠시 뒤 다시 확인해요."},10000);
+  let pushed=false;
+  subscribe(list=>{
+    rows=list;
+    const mine=rows.find(r=>r.id===myId);
+    if(mine){for(const k in GAMES){if(typeof mine[k]==="number"&&better(k,mine[k],best[k]))best[k]=mine[k]}}
+    store.set("arcade.best",best);
+    // 이 기기에 있던 기록이 서버보다 좋으면 한 번 올려요
+    const ahead=Object.keys(GAMES).some(k=>best[k]!=null&&(!mine||better(k,best[k],mine[k])));
+    if(ahead&&!pushed){pushed=true;db.doc("scores/"+myId).set({...best,nick:shownNick(),updatedAt:Date.now()}).catch(()=>{})}
+    clearTimeout(timer);rankState="live";
+    $("#status").innerHTML=`${label} 연결됨 · 참가자 <b>${rows.length}</b>명`;
+    renderCarts();renderRank();
+  },()=>{clearTimeout(timer);backend="local";loadLocal();$("#status").textContent="랭킹 서버에 연결할 수 없어 이 브라우저에 저장해요";renderCarts();renderRank()});
+}
+
+async function connectFirebase(){
+  $("#status").textContent="전체 랭킹에 연결하는 중…";
+  try{
+    const B="https://www.gstatic.com/firebasejs/10.12.2/";
+    const [{initializeApp},A,F]=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-auth.js"),import(B+"firebase-firestore.js")]);
+    const app=initializeApp(FB_CONFIG),auth=A.getAuth(app),fdb=F.getFirestore(app);
+    /* 익명 로그인: 가입 없이 기기마다 고유 id가 생기고, 이 id 문서만 내가 고칠 수 있어요 */
+    await auth.authStateReady();
+    if(!auth.currentUser) await A.signInAnonymously(auth);
+    const adapter={doc:p=>({set:d=>F.setDoc(F.doc(fdb,p),d)})};
+    startShared("firebase",adapter,auth.currentUser.uid,(next,fail)=>{
+      F.onSnapshot(F.collection(fdb,"scores"),snap=>next(snap.docs.map(d=>({id:d.id,...d.data()}))),fail);
+    });
+  }catch(e){
+    console.warn("ranking",e);
+    $("#status").textContent="전체 랭킹에 연결하지 못해 이 브라우저에 저장해요";
+  }
+}
+
+/* claude.ai에서 열면 그 페이지의 공유 db, 일반 웹페이지(https)에서 열면 Firebase 전체 랭킹 */
 async function connect(){
-  if(!window.claude?.use) return;           // 일반 웹페이지에선 window.claude가 없으니 로컬 모드로 동작
+  if(!window.claude?.use){ if(location.protocol==="https:"||location.hostname==="localhost") connectFirebase(); return; }
   $("#status").textContent="공유 랭킹에 연결하는 중…";
   const [user,d]=await Promise.all([claude.use("user"),claude.use("db")]);
   let id=null;
   if(user){try{const me=await user.me();id=me.id;if(!nick&&me.name){nick=me.name;nickEl.value=nick;store.set("arcade.nick",nick)}}catch{}}
   if(!d||!id){loadLocal();$("#status").textContent="로그인하지 않아 기록은 이 브라우저에만 저장돼요";renderCarts();renderRank();return}
-  mode="shared"; db=d; myId=id; rankState="loading";
-  best = {...store.get("arcade.best",{})}; rows=[];
-  renderCarts(); renderRank(); restart();
-  const timer=setTimeout(()=>{if(rankState==="loading")$("#status").textContent="랭킹 서버 응답이 늦어요. 잠시 뒤 다시 확인해요."},10000);
-  db.collection("scores").onSnapshot(snap=>{
-    rows=snap.docs.map(s=>({id:s.id,...s.data()}));
-    const mine=rows.find(r=>r.id===myId);
-    if(mine){for(const k in GAMES){if(typeof mine[k]==="number"&&better(k,mine[k],best[k]))best[k]=mine[k]}store.set("arcade.best",best)}
-    if(!snap.metadata.fromCache){clearTimeout(timer);rankState="live"}
-    $("#status").innerHTML=`공유 랭킹 연결됨 · 참가자 <b>${rows.length}</b>명`;
-    renderCarts();renderRank();
-  },()=>{clearTimeout(timer);loadLocal();$("#status").textContent="랭킹 서버에 연결할 수 없어 이 브라우저에 저장해요";renderCarts();renderRank()});
+  startShared("claude",d,id,(next,fail)=>{
+    d.collection("scores").onSnapshot(snap=>next(snap.docs.map(x=>({id:x.id,...x.data()}))),fail);
+  });
 }
 
 /* ---------- 공통 도우미 ---------- */
