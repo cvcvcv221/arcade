@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>쉬는시간 오락실</title>
-  <meta name="description" content="친구들과 기록을 겨루는 미니게임 18종. 설치 없이 브라우저에서 바로 플레이.">
+  <meta name="description" content="친구들과 기록을 겨루는 미니게임 23종. 설치 없이 브라우저에서 바로 플레이.">
   <meta property="og:title" content="쉬는시간 오락실">
-  <meta property="og:description" content="미니게임 18종. 내 기록을 깨 봐!">
+  <meta property="og:description" content="미니게임 23종. 내 기록을 깨 봐!">
   <meta name="theme-color" content="#2F45F5">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='9' fill='%232F45F5'/%3E%3Cpath d='M12 17v8M8 21h8' stroke='%23fff' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='27' cy='18' r='2.5' fill='%23fff'/%3E%3Ccircle cx='31' cy='24' r='2.5' fill='%23fff'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,6 +21,7 @@
   --c-brick:#C62F3B; --c-run:#5E7A1F; --c-seq:#0E8C82; --c-num:#4A5878; --c-aim:#A63DB8; --c-math:#B8651A;
   --on-label:#FFFFFF;
   --c-klon:#1B6B45; --c-free:#24508A; --c-bj:#9C1C3A; --c-hilo:#8A6410;
+  --c-slide:#5B4FCF; --c-flap:#3E8E2F; --c-stroop:#C2410C; --c-odd:#0F7C91; --c-ttt:#6D5A47;
   --felt:#1E6B47; --felt-line:rgba(255,255,255,.28); --card-bg:#FCFCF8; --card-ink:#1B1B1F; --card-red:#C41E32; --back-a:#2F45F5; --back-b:#4A5DFF;
   --gold:#D99A00;
   --f-display:"Black Han Sans","IBM Plex Sans KR",system-ui,sans-serif;
@@ -36,6 +37,7 @@
   --c-brick:#FF6B76; --c-run:#A6CC4E; --c-seq:#3DD6C8; --c-num:#9FB0D4; --c-aim:#D98BE8; --c-math:#F0A050;
   --on-label:#11131D;
   --c-klon:#4FC587; --c-free:#7EA7E8; --c-bj:#F0708A; --c-hilo:#E5B54A;
+  --c-slide:#A79DFF; --c-flap:#7FCB6B; --c-stroop:#FB8A4B; --c-odd:#4CC6DB; --c-ttt:#CDB59B;
   --felt:#17533A; --felt-line:rgba(255,255,255,.22); --card-bg:#F4F4EE; --card-ink:#1B1B1F; --card-red:#C41E32; --back-a:#3A4CC8; --back-b:#5466E0;
   --gold:#FFC53D; color-scheme:dark}}
 :root[data-theme="dark"]{
@@ -46,6 +48,7 @@
   --c-brick:#FF6B76; --c-run:#A6CC4E; --c-seq:#3DD6C8; --c-num:#9FB0D4; --c-aim:#D98BE8; --c-math:#F0A050;
   --on-label:#11131D;
   --c-klon:#4FC587; --c-free:#7EA7E8; --c-bj:#F0708A; --c-hilo:#E5B54A;
+  --c-slide:#A79DFF; --c-flap:#7FCB6B; --c-stroop:#FB8A4B; --c-odd:#4CC6DB; --c-ttt:#CDB59B;
   --felt:#17533A; --felt-line:rgba(255,255,255,.22); --card-bg:#F4F4EE; --card-ink:#1B1B1F; --card-red:#C41E32; --back-a:#3A4CC8; --back-b:#5466E0;
   --gold:#FFC53D; color-scheme:dark}
 *{box-sizing:border-box}
@@ -129,6 +132,7 @@ header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between
 .react-pad{height:320px;border-radius:12px;border:0;width:100%;display:grid;place-items:center;text-align:center;font-family:var(--f-display);font-size:clamp(22px,4vw,34px);color:#fff;background:var(--c-reaction);user-select:none;touch-action:manipulation;padding:16px}
 .react-pad.wait{background:#B3261E}
 .react-pad.go{background:#14A06B}
+.react-pad.decoy{background:#2563EB}
 .react-pad small{display:block;font-family:var(--f-body);font-size:14px;opacity:.9;margin-top:8px}
 .tries{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .tries span{font-family:var(--f-num);font-size:13px;background:var(--sunk);padding:4px 10px;border-radius:999px;min-width:64px;text-align:center}
@@ -200,6 +204,33 @@ header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between
 
 .share{margin-top:12px;width:100%}
 
+/* 난이도 */
+.lvrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:-4px 0 14px}
+.diff{display:inline-flex;background:var(--sunk);border-radius:999px;padding:3px;gap:2px}
+.diff button{border:0;background:transparent;border-radius:999px;padding:6px 14px;font-weight:700;font-size:13px;color:var(--muted)}
+.diff button[aria-pressed="true"]{background:var(--gc,var(--accent));color:#fff}
+.diff.sm button{padding:4px 10px;font-size:12px}
+.lvrow .hint{font-size:12.5px}
+.rank .diff{margin:2px 0 10px}
+.q4{--qc:var(--c-memory)}.q5{--qc:var(--c-mines)}
+.hole.bomb .mole{background:#26262E}
+.hole.bomb .mole::before,.hole.bomb .mole::after{background:#E0392B}
+/* 슬라이드 퍼즐 */
+.slide{display:grid;gap:6px;max-width:400px;margin:0 auto;background:var(--sunk);padding:8px;border-radius:12px;user-select:none;touch-action:manipulation}
+.ptile{aspect-ratio:1;border:0;border-radius:8px;background:var(--c-slide);color:#fff;font-family:var(--f-num);font-weight:700;font-size:clamp(16px,5vw,28px);padding:0}
+.ptile.ok{background:color-mix(in srgb,var(--c-slide) 60%,var(--surface))}
+.pblank{aspect-ratio:1}
+/* 색깔 단어 */
+.sbtns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sbtn{border:0;border-radius:10px;padding:14px 6px;background:var(--sunk);color:var(--fg);font-weight:700;font-size:16px;touch-action:manipulation}
+/* 다른 색 찾기 */
+.odd{display:grid;gap:5px;max-width:400px;aspect-ratio:1;margin:0 auto;user-select:none}
+.ocell{border:0;border-radius:8px;padding:0;touch-action:manipulation;min-height:0}
+/* 틱택토 */
+.ttt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:320px;margin:0 auto}
+.xc{aspect-ratio:1;border:0;border-radius:12px;background:var(--sunk);font-size:clamp(34px,10vw,56px);font-weight:700;color:var(--fg);padding:0;line-height:1}
+.xc.O{color:var(--c-ttt)}.xc.X{color:var(--c-reaction)}
+
 /* 카드 게임 공통 */
 .felt{background:var(--felt);border-radius:12px;padding:10px;user-select:none;-webkit-user-select:none;touch-action:manipulation;--cw:48px}
 .crow{display:grid;gap:6px;align-items:start}
@@ -239,7 +270,7 @@ header{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between
   <header>
     <div class="brand">
       <h1>쉬는시간 <span>오락실</span></h1>
-      <p>미니게임 18종. 최고 기록을 깨면 모두가 보는 랭킹판에 이름이 올라가요.</p>
+      <p>미니게임 23종. 최고 기록을 깨면 모두가 보는 랭킹판에 이름이 올라가요.</p>
     </div>
     <div class="me-box">
       <div class="player">
@@ -269,7 +300,7 @@ const GAMES = {
   g2048:{name:"2048",tag:"PUZZLE · 점수",color:"--c-2048",lower:false,fmt:v=>v.toLocaleString()+" 점",
     desc:"같은 숫자를 밀어서 합치세요. 방향키나 스와이프.",glyph:svg('<rect x="4" y="4" width="14" height="14" rx="3"/><rect x="22" y="4" width="14" height="14" rx="3" opacity=".6"/><rect x="4" y="22" width="14" height="14" rx="3" opacity=".6"/><rect x="22" y="22" width="14" height="14" rx="3"/>','fill="currentColor"')},
   memory:{name:"짝 맞추기",tag:"MEMORY · 완료 시간",color:"--c-memory",lower:true,fmt:v=>v.toFixed(1)+" 초",
-    desc:"카드 두 장씩 뒤집어 같은 모양 8쌍을 찾으세요.",glyph:svg('<rect x="5" y="8" width="16" height="24" rx="3"/><rect x="19" y="8" width="16" height="24" rx="3" fill="currentColor" fill-opacity=".25"/>')},
+    desc:"카드 두 장씩 뒤집어 같은 모양 짝을 모두 찾으세요.",glyph:svg('<rect x="5" y="8" width="16" height="24" rx="3"/><rect x="19" y="8" width="16" height="24" rx="3" fill="currentColor" fill-opacity=".25"/>')},
   tetris:{name:"테트리스",tag:"BLOCKS · 점수",color:"--c-tetris",lower:false,fmt:v=>v.toLocaleString()+" 점",
     desc:"←→ 이동, ↑ 회전, ↓ 천천히, 스페이스 바로 내리기.",glyph:svg('<rect x="4" y="22" width="10" height="10"/><rect x="14" y="22" width="10" height="10"/><rect x="14" y="12" width="10" height="10"/><rect x="24" y="22" width="10" height="10"/>','fill="currentColor" stroke="rgba(0,0,0,.28)" stroke-width="1.5"')},
   mines:{name:"지뢰찾기",tag:"LOGIC · 완료 시간",color:"--c-mines",lower:true,fmt:v=>v.toFixed(1)+" 초",
@@ -284,8 +315,8 @@ const GAMES = {
     desc:"점프로 장애물을 넘으세요. 달릴수록 빨라져요.",glyph:svg('<path d="M3 33h34" stroke-linecap="round"/><rect x="8" y="14" width="11" height="11" rx="3" fill="currentColor" stroke="none"/><rect x="27" y="22" width="6" height="11" rx="1.5" fill="currentColor" stroke="none"/><path d="M12 30q8-4 10-12" stroke-dasharray="2 3" stroke-width="2"/>')},
   seq:{name:"순서 기억",tag:"MEMORY · 단계",color:"--c-seq",lower:false,fmt:v=>v+" 단계",
     desc:"불이 켜진 순서를 기억했다가 똑같이 누르세요.",glyph:svg('<rect x="5" y="5" width="13" height="13" rx="4"/><rect x="22" y="5" width="13" height="13" rx="4" opacity=".45"/><rect x="5" y="22" width="13" height="13" rx="4" opacity=".45"/><rect x="22" y="22" width="13" height="13" rx="4" opacity=".75"/>','fill="currentColor"')},
-  num:{name:"숫자 터치",tag:"SPEED · 1→25",color:"--c-num",lower:true,fmt:v=>v.toFixed(2)+" 초",
-    desc:"1부터 25까지 순서대로 최대한 빨리 누르세요.",glyph:svg('<rect x="5" y="5" width="30" height="30" rx="5"/><path d="M15 15l4-3v16M24 14h5l-4 6c5 0 5 7 0 7h-2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>')},
+  num:{name:"숫자 터치",tag:"SPEED · 순서대로",color:"--c-num",lower:true,fmt:v=>v.toFixed(2)+" 초",
+    desc:"1부터 순서대로 최대한 빨리 누르세요.",glyph:svg('<rect x="5" y="5" width="30" height="30" rx="5"/><path d="M15 15l4-3v16M24 14h5l-4 6c5 0 5 7 0 7h-2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>')},
   aim:{name:"조준 연습",tag:"AIM · 30초 점수",color:"--c-aim",lower:false,fmt:v=>v+" 점",
     desc:"30초 동안 과녁을 맞히세요. 빗나가면 1점 감점.",glyph:svg('<circle cx="20" cy="20" r="14"/><circle cx="20" cy="20" r="7"/><circle cx="20" cy="20" r="2" fill="currentColor" stroke="none"/>')},
   math:{name:"암산",tag:"BRAIN · 60초 정답",color:"--c-math",lower:false,fmt:v=>v+" 문제",
@@ -293,14 +324,34 @@ const GAMES = {
   klondike:{name:"솔리테어",tag:"CARDS · 완성 시간",color:"--c-klon",lower:true,fmt:v=>fmtTime(v),
     desc:"같은 무늬를 A부터 K까지 위쪽에 모으세요. 카드를 누르면 알아서 옮겨져요.",glyph:svg('<rect x="4" y="9" width="17" height="24" rx="3" fill="currentColor" stroke="none" opacity=".55"/><rect x="13" y="5" width="17" height="24" rx="3" fill="currentColor" stroke="none"/><path d="M21.5 11l3.5 5-3.5 5-3.5-5z" fill="var(--c)" stroke="none"/>')},
   freecell:{name:"프리셀",tag:"CARDS · 완성 시간",color:"--c-free",lower:true,fmt:v=>fmtTime(v),
-    desc:"모든 카드가 보이는 솔리테어. 빈칸 4개를 잘 써서 위쪽에 모으세요.",glyph:svg('<rect x="4" y="5" width="13" height="18" rx="2.5" stroke-dasharray="3 2.5"/><rect x="21" y="5" width="13" height="18" rx="2.5" fill="currentColor" stroke="none"/><rect x="12" y="17" width="13" height="18" rx="2.5" fill="currentColor" stroke="none" opacity=".7"/>')},
+    desc:"모든 카드가 보이는 솔리테어. 빈칸을 잘 써서 위쪽에 모으세요.",glyph:svg('<rect x="4" y="5" width="13" height="18" rx="2.5" stroke-dasharray="3 2.5"/><rect x="21" y="5" width="13" height="18" rx="2.5" fill="currentColor" stroke="none"/><rect x="12" y="17" width="13" height="18" rx="2.5" fill="currentColor" stroke="none" opacity=".7"/>')},
   blackjack:{name:"블랙잭",tag:"CARDS · 남은 칩",color:"--c-bj",lower:false,fmt:v=>v.toLocaleString()+" 칩",
     desc:"21에 가깝게 만들어 딜러를 이기세요. 10판 뒤 남은 칩이 기록돼요.",glyph:svg('<rect x="4" y="8" width="17" height="24" rx="3" fill="currentColor" stroke="none" opacity=".6" transform="rotate(-8 12 20)"/><rect x="17" y="7" width="17" height="24" rx="3" fill="currentColor" stroke="none" transform="rotate(8 25 19)"/><path d="M25.5 14.5c-2.5 2-4 3.2-4 5a2 2 0 0 0 3.5 1.3V23h1v-2.2a2 2 0 0 0 3.5-1.3c0-1.8-1.5-3-4-5z" fill="var(--c)" stroke="none"/>')},
   hilo:{name:"하이로우",tag:"CARDS · 연속 정답",color:"--c-hilo",lower:false,fmt:v=>v+" 연속",
-    desc:"다음 카드가 지금보다 높을지 낮을지 맞히세요. 틀리면 끝.",glyph:svg('<rect x="5" y="8" width="14" height="22" rx="3" fill="currentColor" stroke="none"/><path d="M27 8v22M22 13l5-5 5 5M22 25l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/>')}
+    desc:"다음 카드가 지금보다 높을지 낮을지 맞히세요. 틀리면 끝.",glyph:svg('<rect x="5" y="8" width="14" height="22" rx="3" fill="currentColor" stroke="none"/><path d="M27 8v22M22 13l5-5 5 5M22 25l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/>')},
+  slide:{name:"슬라이드 퍼즐",tag:"PUZZLE · 완성 시간",color:"--c-slide",lower:true,fmt:v=>fmtTime(v),
+    desc:"빈칸으로 숫자 타일을 밀어서 1부터 순서대로 맞추세요.",glyph:svg('<rect x="5" y="5" width="13" height="13" rx="3" fill="currentColor" stroke="none"/><rect x="22" y="5" width="13" height="13" rx="3" fill="currentColor" stroke="none" opacity=".6"/><rect x="5" y="22" width="13" height="13" rx="3" fill="currentColor" stroke="none" opacity=".6"/><path d="M24 28h9M29.5 24.5 33 28l-3.5 3.5" stroke-linecap="round" stroke-linejoin="round"/>')},
+  flappy:{name:"날개짓",tag:"ARCADE · 통과 수",color:"--c-flap",lower:false,fmt:v=>v+" 개",
+    desc:"눌러서 날갯짓! 기둥 사이를 최대한 많이 통과하세요.",glyph:svg('<rect x="27" y="3" width="8" height="13" rx="2" fill="currentColor" stroke="none"/><rect x="27" y="25" width="8" height="12" rx="2" fill="currentColor" stroke="none"/><circle cx="13" cy="20" r="6" fill="currentColor" stroke="none"/><path d="M6 15q4-4 8 0" stroke-linecap="round"/>')},
+  stroop:{name:"색깔 단어",tag:"BRAIN · 30초 점수",color:"--c-stroop",lower:false,fmt:v=>v+" 점",
+    desc:"글자의 뜻이 아니라 글자의 색을 고르세요. 헷갈려요!",glyph:svg('<path d="M8 30 15 10h2l7 20M10.5 23h11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="31" cy="12" r="4" fill="currentColor" stroke="none"/><circle cx="31" cy="26" r="4" fill="currentColor" stroke="none" opacity=".5"/>')},
+  oddcolor:{name:"다른 색 찾기",tag:"EYE · 30초 단계",color:"--c-odd",lower:false,fmt:v=>v+" 단계",
+    desc:"색이 살짝 다른 한 칸을 찾으세요. 갈수록 어려워져요.",glyph:svg('<rect x="5" y="5" width="13" height="13" rx="3" fill="currentColor" stroke="none" opacity=".75"/><rect x="22" y="5" width="13" height="13" rx="3" fill="currentColor" stroke="none" opacity=".75"/><rect x="5" y="22" width="13" height="13" rx="3" fill="currentColor" stroke="none" opacity=".75"/><rect x="22" y="22" width="13" height="13" rx="3" fill="currentColor" stroke="none"/>')},
+  ttt:{name:"틱택토",tag:"VS AI · 점수",color:"--c-ttt",lower:false,fmt:v=>v+" 점",
+    desc:"컴퓨터와 삼목 대결. 이기면 3점, 비기면 1점, 지면 끝!",glyph:svg('<path d="M14 5v30M26 5v30M5 14h30M5 26h30" stroke-linecap="round"/><circle cx="9.5" cy="9.5" r="3"/><path d="M28.5 28.5l5 5M33.5 28.5l-5 5" stroke-linecap="round"/>')}
 };
 
 
+/* 난이도: 쉬움(e)·보통(n)·어려움(h). 기존 기록은 '보통'으로 그대로 유지돼요.
+   저장 키: 보통은 게임 이름 그대로(snake), 쉬움은 snake_e, 어려움은 snake_h */
+const LVDESC={"reaction": ["3회 평균", "5회 평균", "5회 평균 · 파란 함정 화면"], "snake": ["느린 속도", "기본 속도", "빠른 속도"], "g2048": ["5×5 판", "4×4 판", "3×3 판"], "memory": ["6쌍", "8쌍", "12쌍"], "tetris": ["천천히 떨어짐", "기본 속도", "빠르게 떨어짐"], "mines": ["8×8 · 지뢰 7개", "9×9 · 지뢰 10개", "12×12 · 지뢰 28개"], "mole": ["느리게 나옴", "기본", "빠르게 · 폭탄 두더지 -3점"], "typing": ["짧은 단어", "모든 단어", "긴 단어"], "breakout": ["넓은 판 · 느린 공", "기본", "좁은 판 · 빠른 공 · 6줄"], "runner": ["느리게 시작", "기본", "빠르게 시작"], "seq": ["천천히 보여줌", "기본", "패드 6개 · 빠르게"], "num": ["1~16", "1~25", "1~36"], "aim": ["큰 과녁", "기본", "작은 과녁 · 빗나가면 -2점"], "math": ["덧셈·뺄셈만", "기본", "큰 숫자부터"], "klondike": ["빈 열에 아무 카드나 놓기", "기본 (1장씩 넘기기)", "3장씩 넘기기"], "freecell": ["빈칸 5개", "빈칸 4개", "빈칸 3개"], "blackjack": ["딜러 카드가 다 보임", "기본", "블랙잭 1배 · 딜러 소프트17 히트"], "hilo": ["확률 힌트", "기본", "3초 안에 고르기"], "slide": ["3×3", "4×4", "5×5"], "flappy": ["넓은 틈 · 느리게", "기본", "좁은 틈 · 빠르게"], "stroop": ["색 3개", "색 4개", "색 6개 · 버튼 섞임"], "oddcolor": ["색 차이 큼", "기본", "색 차이 작음 · 칸 많음"], "ttt": ["허술한 컴퓨터", "보통 컴퓨터", "지지 않는 컴퓨터"]};
+const DIFFS=[["e","쉬움"],["n","보통"],["h","어려움"]],DNAME={e:"쉬움",n:"보통",h:"어려움"};
+let diffSel={};try{diffSel=JSON.parse(localStorage.getItem("arcade.diff")||"{}")||{}}catch{}
+const dOf=g=>diffSel[g]||"n";
+const keyOf=(g,d=dOf(g))=>d==="n"?g:g+"_"+d;
+const baseOf=k=>k.replace(/_(e|h)$/,"");
+const lvl=()=>dOf(current);
+const byLv=(e,n,h)=>({e,n,h})[lvl()];
 const fmtTime=v=>v>=60?`${Math.floor(v/60)}분 ${(v%60).toFixed(0).padStart(2,"0")}초`:v.toFixed(1)+" 초";
 const $ = s => document.querySelector(s);
 const store = {get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch{return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
@@ -324,22 +375,22 @@ function loadLocal(){
 }
 
 function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2600)}
-function better(g,a,b){return b==null||(GAMES[g].lower?a<b:a>b)}
-const fmtBest = g => best[g]!=null ? GAMES[g].fmt(best[g]) : "—";
+function better(k,a,b){const G=GAMES[baseOf(k)];if(!G)return false;return b==null||(G.lower?a<b:a>b)}
+const fmtBest = g => best[keyOf(g)]!=null ? GAMES[g].fmt(best[keyOf(g)]) : "—";
 
 /* ---------- 랭킹 ---------- */
-function board(g){return rows.filter(r=>typeof r[g]==="number").sort((a,b)=>GAMES[g].lower?a[g]-b[g]:b[g]-a[g])}
+function board(g,d){const k=keyOf(g,d);return rows.filter(r=>typeof r[k]==="number").sort((a,b)=>GAMES[g].lower?a[k]-b[k]:b[k]-a[k])}
 const nameOf = r => r.nick || "이름 없는 플레이어";
 
 function renderCarts(){
   const el=$("#carts");
   el.innerHTML = Object.entries(GAMES).map(([k,g])=>`<button class="cart" style="--c:var(${g.color})" data-g="${k}" aria-current="${k===current}">
       <div class="label">${g.glyph}<h2>${g.name}</h2><small>${g.tag}</small></div>
-      <div class="meta"><div><span>내 최고</span><span>${fmtBest(k)}</span></div>
+      <div class="meta"><div><span>내 최고 · ${DNAME[dOf(k)]}</span><span>${fmtBest(k)}</span></div>
       <div><span>1위</span><span class="t1"></span></div></div></button>`).join("");
   el.querySelectorAll(".cart").forEach(b=>{
     const k=b.dataset.g, top=board(k)[0];
-    b.querySelector(".t1").textContent = top?`${nameOf(top)} · ${GAMES[k].fmt(top[k])}`:"아직 없음";
+    b.querySelector(".t1").textContent = top?`${nameOf(top)} · ${GAMES[k].fmt(top[keyOf(k)])}`:"아직 없음";
     b.onclick=()=>{location.hash=k;route(); if(innerWidth<820) $("#stage").scrollIntoView({behavior:"smooth"})};
   });
 }
@@ -351,17 +402,17 @@ function renderRank(){
   let body;
   if(mode==="shared"&&rankState==="loading"&&!list.length) body=`<div class="empty">랭킹 불러오는 중…</div>`;
   else if(!list.length) body=`<div class="empty">아직 기록이 없어요. 첫 1위를 차지해보세요.</div>`;
-  else body=`<ol>${list.map((r,i)=>`<li class="${r.id===myId?"me":""}"><span class="pos">${i+1}</span><span class="who"></span><span class="val">${g.fmt(r[current])}</span></li>`).join("")}</ol>`;
+  else body=`<ol>${list.map((r,i)=>`<li class="${r.id===myId?"me":""}"><span class="pos">${i+1}</span><span class="who"></span><span class="val">${g.fmt(r[keyOf(current)])}</span></li>`).join("")}</ol>`;
   const sub = mode==="shared" ? (backend==="firebase"?"모든 접속자 전체 랭킹 · 실시간":"친구들과 공유 · 실시간 반영") : "이 브라우저에 저장 · 닉네임별 기록";
-  el.innerHTML=`<h3>${g.name} 랭킹</h3><p class="sub">${g.lower?"낮을수록":"높을수록"} 좋아요 · ${sub}</p>${body}${best[current]!=null?`<button class="btn ghost share" id="share" type="button">내 기록 복사해서 자랑하기</button>`:""}`;
-  const sh=$("#share");if(sh)sh.onclick=shareBest;
+  el.innerHTML=`<h3>${g.name} 랭킹</h3>${diffTabs(current,"sm")}<p class="sub">${DNAME[dOf(current)]} 난이도 · ${g.lower?"낮을수록":"높을수록"} 좋아요 · ${sub}</p>${body}${best[keyOf(current)]!=null?`<button class="btn ghost share" id="share" type="button">내 기록 복사해서 자랑하기</button>`:""}`;
+  const sh=$("#share");if(sh)sh.onclick=shareBest;bindDiff(el);
   el.querySelectorAll(".who").forEach((w,i)=>{w.textContent=nameOf(list[i])+(list[i].id===myId?" (나)":"")});
 }
 /* 내 기록을 문장으로 복사 (카톡 등에 붙여넣기용) */
 async function shareBest(){
   const g=GAMES[current];
   const url=!window.claude&&location.protocol.startsWith("http")?" "+location.href:"";
-  const text=`[쉬는시간 오락실] ${g.name} ${g.fmt(best[current])} 기록했어! 너도 도전해봐${url}`;
+  const text=`[쉬는시간 오락실] ${g.name}(${DNAME[dOf(current)]}) ${g.fmt(best[keyOf(current)])} 기록했어! 너도 도전해봐${url}`;
   const done="기록을 복사했어요. 채팅창에 붙여넣어 보세요";
   try{await navigator.clipboard.writeText(text);toast(done)}
   catch{
@@ -374,9 +425,9 @@ function refreshHudBest(g){const el=document.querySelector("[data-best]");if(el&
 
 /* 최고 기록일 때만 저장: 로컬은 localStorage, 공유 모드는 db 문서 scores/{내 id} */
 async function saveScore(g,val){
-  const G=GAMES[g];
-  if(!better(g,val,best[g])){toast(`기록 ${G.fmt(val)} · 내 최고는 ${G.fmt(best[g])}`);return}
-  best[g]=val; refreshHudBest(g); sfx("best"); confetti();
+  const G=GAMES[g],k=keyOf(g);
+  if(!better(k,val,best[k])){toast(`기록 ${G.fmt(val)} · ${DNAME[dOf(g)]} 내 최고는 ${G.fmt(best[k])}`);return}
+  best[k]=val; refreshHudBest(g); sfx("best"); confetti();
   if(mode==="local"){
     records[localName()]={...best}; store.set("arcade.records",records); loadLocal();
     toast(`새 최고 기록! ${G.fmt(val)}`+(nick?"":" · 닉네임을 정하면 이름으로 저장돼요"));
@@ -423,10 +474,11 @@ function startShared(kind,dbAdapter,id,subscribe){
   subscribe(list=>{
     rows=list;
     const mine=rows.find(r=>r.id===myId);
-    if(mine){for(const k in GAMES){if(typeof mine[k]==="number"&&better(k,mine[k],best[k]))best[k]=mine[k]}}
+    /* 서버에 있는 숫자 기록은 모두 보존: 내 기록 문서를 다시 쓸 때 빠지는 항목이 없게 해요 */
+    if(mine){for(const k in mine){if(typeof mine[k]!=="number"||k==="updatedAt")continue;if(best[k]==null||better(k,mine[k],best[k]))best[k]=mine[k]}}
     store.set("arcade.best",best);
     // 이 기기에 있던 기록이 서버보다 좋으면 한 번 올려요
-    const ahead=Object.keys(GAMES).some(k=>best[k]!=null&&(!mine||better(k,best[k],mine[k])));
+    const ahead=Object.keys(best).some(k=>best[k]!=null&&(!mine||mine[k]==null||better(k,best[k],mine[k])));
     if(ahead&&!pushed){pushed=true;db.doc("scores/"+myId).set({...best,nick:shownNick(),updatedAt:Date.now()}).catch(()=>{})}
     clearTimeout(timer);rankState="live";
     $("#status").innerHTML=`${label} 연결됨 · 참가자 <b>${rows.length}</b>명`;
@@ -467,10 +519,15 @@ async function connect(){
 }
 
 /* ---------- 공통 도우미 ---------- */
+function diffTabs(g,cls=""){return `<div class="diff ${cls}" role="group" aria-label="난이도">${DIFFS.map(([d,n])=>`<button type="button" data-diff="${d}" aria-pressed="${dOf(g)===d}">${n}</button>`).join("")}</div>`}
+function bindDiffShell(){bindDiff($("#game"))}
+function bindDiff(root){root.querySelectorAll("[data-diff]").forEach(b=>b.onclick=()=>setDiff(current,b.dataset.diff))}
+function setDiff(g,d){if(dOf(g)===d)return;diffSel[g]=d;try{localStorage.setItem("arcade.diff",JSON.stringify(diffSel))}catch{}restart();renderCarts();renderRank()}
 function shell(k,hud,body,foot=""){
   const g=GAMES[k],p=$("#game");
   p.style.setProperty("--gc",`var(${g.color})`);
-  p.innerHTML=`<div class="panel-head"><h3>${g.name}</h3><p>${g.desc}</p></div><div class="hud">${hud}<div><small>내 최고</small><b data-best>${fmtBest(k)}</b></div></div>${body}${foot}`;
+  p.innerHTML=`<div class="panel-head"><h3>${g.name}</h3><p>${g.desc}</p></div><div class="lvrow">${diffTabs(k)}<span class="hint">${(LVDESC[k]||[])[["e","n","h"].indexOf(dOf(k))]||""}</span></div><div class="hud">${hud}<div><small>내 최고</small><b data-best>${fmtBest(k)}</b></div></div>${body}${foot}`;
+  bindDiffShell();
 }
 /* 테마 색상은 한 번만 읽어서 저장해 둬요 (그릴 때마다 읽으면 느려요) */
 let colorCache={};
@@ -565,20 +622,29 @@ function swipe(el,cb,tap){
 
 /* ---------- 반응속도 ---------- */
 function reaction(){
-  shell("reaction",`<div><small>회차</small><b id="rr">0/5</b></div>`,
-    `<button class="react-pad" id="pad">클릭해서 시작<small>5번 재서 평균을 기록해요</small></button><div class="tries" id="tries"></div>`);
+  const RN=byLv(3,5,5),TRAP=lvl()==="h";
+  shell("reaction",`<div><small>회차</small><b id="rr">0/${RN}</b></div>`,
+    `<button class="react-pad" id="pad">클릭해서 시작<small>${RN}번 재서 평균을 기록해요${TRAP?" · 파란 화면은 함정!":""}</small></button><div class="tries" id="tries"></div>`);
   const pad=$("#pad");let state="idle",t0=0,timer=null,times=[];
   const set=(cls,html)=>{pad.className="react-pad "+cls;pad.innerHTML=html};
   /* 1.2~4초 사이 무작위 시점에 초록색으로 바뀌어요 */
-  const arm=()=>{state="wait";set("wait","기다리세요…<small>초록색이 되면 클릭</small>");timer=setTimeout(()=>{state="go";t0=performance.now();set("go","지금!")},1200+Math.random()*2800)};
-  const draw=()=>{$("#tries").innerHTML=times.map(t=>`<span>${Math.round(t)} ms</span>`).join("");$("#rr").textContent=times.length+"/5"};
+  const arm=()=>{
+    state="wait";set("wait","기다리세요…<small>초록색이 되면 클릭</small>");
+    const go=()=>{state="go";t0=performance.now();set("go","지금!")};
+    timer=setTimeout(()=>{
+      /* 어려움: 가끔 파란 함정 화면이 먼저 나와요. 이때 누르면 실패 */
+      if(TRAP&&Math.random()<.45){state="decoy";set("decoy","…?");timer=setTimeout(()=>{state="wait";set("wait","기다리세요…<small>초록색이 되면 클릭</small>");timer=setTimeout(go,600+Math.random()*1600)},480)}
+      else go();
+    },1200+Math.random()*2800);
+  };
+  const draw=()=>{$("#tries").innerHTML=times.map(t=>`<span>${Math.round(t)} ms</span>`).join("");$("#rr").textContent=times.length+"/"+RN};
   const hit=()=>{
     if(state==="idle"||state==="done"){times=[];draw();arm()}
-    else if(state==="wait"){clearTimeout(timer);state="early";set("","너무 빨라요!<small>클릭해서 이번 회차 다시</small>")}
+    else if(state==="wait"||state==="decoy"){clearTimeout(timer);state="early";set("","너무 빨라요!<small>클릭해서 이번 회차 다시</small>")}
     else if(state==="early"||state==="between"){arm()}
     else if(state==="go"){times.push(performance.now()-t0);draw();
-      if(times.length<5){state="between";set("",`${Math.round(times.at(-1))} ms<small>클릭해서 다음 회차</small>`)}
-      else{const avg=times.reduce((a,b)=>a+b,0)/5;state="done";set("",`평균 ${Math.round(avg)} ms<small>클릭해서 다시 도전</small>`);saveScore("reaction",avg)}}
+      if(times.length<RN){state="between";set("",`${Math.round(times.at(-1))} ms<small>클릭해서 다음 회차</small>`)}
+      else{const avg=times.reduce((a,b)=>a+b,0)/RN;state="done";set("",`평균 ${Math.round(avg)} ms<small>클릭해서 다시 도전</small>`);saveScore("reaction",avg)}}
   };
   pad.addEventListener("pointerdown",e=>{e.preventDefault();hit()});
   const off=onKeys({space:hit,enter:hit});
@@ -601,9 +667,9 @@ function snake(){
     ctx.globalAlpha=1;
   };
   /* 고정 간격 게임 루프: requestAnimationFrame으로 흐른 시간을 모아서, 일정 간격마다 한 칸씩 움직여요 */
-  let iv=140,last=0,acc=0,played=false;
+  const SP=byLv([190,100,2],[140,65,3],[105,48,3]);let iv=SP[0],last=0,acc=0,played=false;
   const frame=t=>{if(!alive)return;acc+=t-last;last=t;if(acc>400)acc=iv;while(acc>=iv&&alive){acc-=iv;step()}if(alive)loop=requestAnimationFrame(frame)};
-  const start=()=>{played=true;body=[[9,10],[8,10],[7,10]];dir=[1,0];queue=[];score=0;iv=140;$("#ss").textContent=0;place();alive=true;$("#ov").hidden=true;draw();dropFocus();
+  const start=()=>{played=true;body=[[9,10],[8,10],[7,10]];dir=[1,0];queue=[];score=0;iv=SP[0];$("#ss").textContent=0;place();alive=true;$("#ov").hidden=true;draw();dropFocus();
     last=performance.now();acc=0;cancelAnimationFrame(loop);loop=requestAnimationFrame(frame)};
   const step=()=>{
     if(queue.length)dir=queue.shift();
@@ -612,7 +678,7 @@ function snake(){
     const solid=eat?body:body.slice(0,-1);   // 먹지 않으면 꼬리가 한 칸 비켜나므로 꼬리 칸은 충돌에서 빼요
     if(h[0]<0||h[1]<0||h[0]>=N||h[1]>=N||solid.some(p=>p[0]===h[0]&&p[1]===h[1]))return over();
     body.unshift(h);
-    if(eat){sfx("hit");score++;$("#ss").textContent=score;place();iv=Math.max(65,140-score*3)}else body.pop();
+    if(eat){sfx("hit");score++;$("#ss").textContent=score;place();iv=Math.max(SP[1],SP[0]-score*SP[2])}else body.pop();
     draw();
   };
   const over=()=>{cancelAnimationFrame(loop);alive=false;sfx("lose");const ov=$("#ov");ov.hidden=false;ov.innerHTML=`<strong>사과 ${score}개</strong><button class="btn" id="go">다시 하기</button><span class="hint">스페이스로도 다시 시작</span>`;$("#go").onclick=start;saveScore("snake",score)};
@@ -632,20 +698,21 @@ function snake(){
 
 /* ---------- 2048 ---------- */
 function g2048(){
+  const N=byLv(5,4,3);
   shell("g2048",`<div><small>점수</small><b id="gs">0</b></div>`,
-    `<div class="board" id="bd" aria-label="2048 보드"></div>`,`<div class="row"><button class="btn ghost" id="nw">새 게임</button><span class="hint" id="gm">방향키나 스와이프로 밀어요</span></div>`);
+    `<div class="board" id="bd" aria-label="2048 보드" style="grid-template-columns:repeat(${N},1fr);grid-template-rows:repeat(${N},1fr)"></div>`,`<div class="row"><button class="btn ghost" id="nw">새 게임</button><span class="hint" id="gm">방향키나 스와이프로 밀어요</span></div>`);
   let grid,score,fresh,over;
   const bd=$("#bd");
   const tileColor=v=>{const i=Math.min(Math.round(Math.log2(v))-1,10);return i<2?null:`color-mix(in srgb,var(--c-2048) ${30+i*7}%,var(--c-reaction) ${Math.max(0,i*6-30)}%)`};
   const draw=()=>{bd.innerHTML=grid.flat().map((v,i)=>{if(!v)return`<div class="tile" style="background:transparent"></div>`;const c=tileColor(v);
     return`<div class="tile${fresh.has(i)?" pop":""}" style="${c?`background:${c};color:var(--on-label);`:""}${v>=1024?"font-size:clamp(14px,4vw,24px)":""}">${v}</div>`}).join("");$("#gs").textContent=score.toLocaleString()};
-  const add=()=>{const e=[];grid.forEach((r,y)=>r.forEach((v,x)=>{if(!v)e.push([y,x])}));if(!e.length)return;const[y,x]=e[Math.random()*e.length|0];grid[y][x]=Math.random()<.9?2:4;fresh.add(y*4+x)};
-  const start=()=>{grid=[...Array(4)].map(()=>[0,0,0,0]);score=0;over=false;fresh=new Set();add();add();$("#gm").textContent="방향키나 스와이프로 밀어요";draw()};
+  const add=()=>{const e=[];grid.forEach((r,y)=>r.forEach((v,x)=>{if(!v)e.push([y,x])}));if(!e.length)return;const[y,x]=e[Math.random()*e.length|0];grid[y][x]=Math.random()<.9?2:4;fresh.add(y*N+x)};
+  const start=()=>{grid=[...Array(N)].map(()=>Array(N).fill(0));score=0;over=false;fresh=new Set();add();add();$("#gm").textContent="방향키나 스와이프로 밀어요";draw()};
   /* 핵심: 한 줄을 왼쪽으로 밀면서 같은 숫자를 한 번씩 합쳐요 */
-  const slide=row=>{const a=row.filter(Boolean),out=[];for(let i=0;i<a.length;i++){if(a[i]===a[i+1]){out.push(a[i]*2);score+=a[i]*2;i++}else out.push(a[i])}while(out.length<4)out.push(0);return out};
+  const slide=row=>{const a=row.filter(Boolean),out=[];for(let i=0;i<a.length;i++){if(a[i]===a[i+1]){out.push(a[i]*2);score+=a[i]*2;i++}else out.push(a[i])}while(out.length<N)out.push(0);return out};
   const move=([dx,dy])=>{
     if(over)return;const before=JSON.stringify(grid);
-    for(let i=0;i<4;i++){
+    for(let i=0;i<N;i++){
       let line=dx?grid[i].slice():grid.map(r=>r[i]);
       if(dx>0||dy>0)line.reverse();line=slide(line);if(dx>0||dy>0)line.reverse();
       if(dx)grid[i]=line;else line.forEach((v,y)=>grid[y][i]=v);
@@ -664,9 +731,10 @@ function g2048(){
 
 /* ---------- 짝 맞추기 ---------- */
 function memory(){
+  const PAIRS=byLv(6,8,12),COLS=byLv(4,4,6);
   shell("memory",`<div><small>시간</small><b id="mt">0.0</b></div><div><small>시도</small><b id="mm">0</b></div>`,
-    `<div class="mem" id="mem"></div>`,`<div class="row"><button class="btn ghost" id="mr">다시 섞기</button><span class="hint">첫 카드를 뒤집으면 시간이 시작돼요</span></div>`);
-  const SYM=["★","●","▲","◆","■","♥","♣","♠"];
+    `<div class="mem" id="mem" style="grid-template-columns:repeat(${COLS},1fr);max-width:${COLS>4?520:420}px"></div>`,`<div class="row"><button class="btn ghost" id="mr">다시 섞기</button><span class="hint">첫 카드를 뒤집으면 시간이 시작돼요</span></div>`);
+  const SYM=["★","●","▲","◆","■","♥","♣","♠","✚","☾","♪","✿"].slice(0,PAIRS);
   let deck,open,done,moves,t0,tick,lock,hold;
   const start=()=>{clearInterval(tick);clearTimeout(hold);deck=[...SYM,...SYM].sort(()=>Math.random()-.5);open=[];done=0;moves=0;t0=null;lock=false;$("#mt").textContent="0.0";$("#mm").textContent=0;
     $("#mem").innerHTML=deck.map((s,i)=>`<button class="card" data-i="${i}" aria-label="카드 ${i+1}"><span>${s}</span></button>`).join("");
@@ -678,7 +746,7 @@ function memory(){
     /* 두 장이 같으면 고정, 다르면 0.65초 뒤 다시 뒤집기 */
     if(open.length===2){moves++;$("#mm").textContent=moves;const[a,b]=open;
       if(deck[a.dataset.i]===deck[b.dataset.i]){a.classList.add("done");b.classList.add("done");sfx("good");open=[];done++;
-        if(done===8){clearInterval(tick);const t=(performance.now()-t0)/1000;$("#mt").textContent=t.toFixed(1);saveScore("memory",Math.round(t*10)/10)}}
+        if(done===PAIRS){clearInterval(tick);const t=(performance.now()-t0)/1000;$("#mt").textContent=t.toFixed(1);saveScore("memory",Math.round(t*10)/10)}}
       else{lock=true;hold=setTimeout(()=>{a.classList.remove("open");b.classList.remove("open");open=[];lock=false},650)}}
   };
   $("#mr").onclick=start;start();
@@ -687,6 +755,7 @@ function memory(){
 
 /* ---------- 테트리스 ---------- */
 function tetris(){
+  const TS=byLv([1050,140,60],[800,80,70],[460,55,40]);
   shell("tetris",`<div><small>점수</small><b id="ts">0</b></div><div><small>줄</small><b id="tl">0</b></div><div><small>레벨</small><b id="tv">1</b></div>`,
     `<div class="tet"><div class="box"><canvas id="tc" width="300" height="600"></canvas><div class="overlay" id="tov"><strong>테트리스</strong><button class="btn" id="tgo">시작</button><span class="hint">←→ 이동 · ↑ 회전 · 스페이스 드롭</span></div></div>
       <div class="tet-side"><small>다음</small><canvas id="tn" width="84" height="84"></canvas></div></div>
@@ -729,7 +798,7 @@ function tetris(){
   const rotate=()=>{if(!alive)return;const m=rot(piece.m);for(const k of [0,-1,1,-2,2]){if(!hits(m,piece.x+k,piece.y)){piece.m=m;piece.x+=k;nudge();draw();return}}};
   const soft=()=>{if(tryMove(0,1)){score+=1;hud();acc=0}};
   const hard=()=>{if(!alive)return;let d=0;while(!hits(piece.m,piece.x,piece.y+1)){piece.y++;d++}score+=d*2;lock();draw();acc=0};
-  const frame=t=>{if(!alive)return;acc+=t-last;last=t;if(acc>1000)acc=0;const iv=Math.max(80,800-(level-1)*70);
+  const frame=t=>{if(!alive)return;acc+=t-last;last=t;if(acc>1000)acc=0;const iv=Math.max(TS[1],TS[0]-(level-1)*TS[2]);
     if(acc>=iv){acc=0;tryMove(0,1)}
     if(hits(piece.m,piece.x,piece.y+1)){if(!lockAt)lockAt=t;if(t-lockAt>=480){lock();draw()}}else lockAt=0;
     if(alive)raf=requestAnimationFrame(frame)};
@@ -746,9 +815,10 @@ function tetris(){
 
 /* ---------- 지뢰찾기 ---------- */
 function mines(){
-  shell("mines",`<div><small>시간</small><b id="mnt">0.0</b></div><div><small>남은 지뢰</small><b id="mnl">10</b></div>`,
-    `<div class="mines" id="mf"></div>`,`<div class="row"><button class="btn ghost" id="mnr">새 판</button><button class="btn ghost" id="mnf" aria-pressed="false">깃발 모드</button><span class="hint" id="mnh">9×9 · 지뢰 10개 · 첫 칸은 항상 안전</span></div>`);
-  const N=9,M=10;let cells,started,t0,tick,over,flagMode=false,opened;
+  const [N,M]=byLv([8,7],[9,10],[12,28]);
+  shell("mines",`<div><small>시간</small><b id="mnt">0.0</b></div><div><small>남은 지뢰</small><b id="mnl">${M}</b></div>`,
+    `<div class="mines" id="mf" style="grid-template-columns:repeat(${N},1fr);max-width:${N>9?460:400}px"></div>`,`<div class="row"><button class="btn ghost" id="mnr">새 판</button><button class="btn ghost" id="mnf" aria-pressed="false">깃발 모드</button><span class="hint" id="mnh">${N}×${N} · 지뢰 ${M}개 · 첫 칸은 항상 안전</span></div>`);
+  let cells,started,t0,tick,over,flagMode=false,opened;
   const around=i=>{const x=i%N,y=i/N|0,r=[];for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){if(!dx&&!dy)continue;const X=x+dx,Y=y+dy;if(X>=0&&Y>=0&&X<N&&Y<N)r.push(Y*N+X)}return r};
   const render=()=>{const f=$("#mf");f.innerHTML=cells.map((c,i)=>{
       let cls="cell",txt="";
@@ -757,7 +827,7 @@ function mines(){
       else if(over&&c.m)txt="✱";
       return`<button class="${cls}" data-i="${i}" aria-label="${c.open?(c.n||"빈 칸"):c.flag?"깃발":"닫힌 칸"}">${txt}</button>`}).join("");
     $("#mnl").textContent=M-cells.filter(c=>c.flag).length};
-  const start=()=>{clearInterval(tick);cells=[...Array(N*N)].map(()=>({m:false,n:0,open:false,flag:false}));started=false;over=false;opened=0;$("#mnt").textContent="0.0";$("#mnh").textContent="9×9 · 지뢰 10개 · 첫 칸은 항상 안전";render()};
+  const start=()=>{clearInterval(tick);cells=[...Array(N*N)].map(()=>({m:false,n:0,open:false,flag:false}));started=false;over=false;opened=0;$("#mnt").textContent="0.0";$("#mnh").textContent=`${N}×${N} · 지뢰 ${M}개 · 첫 칸은 항상 안전`;render()};
   /* 첫 클릭 칸과 그 주변 8칸엔 지뢰를 두지 않아요 */
   const plant=safe=>{const ban=new Set([safe,...around(safe)]);let k=0;while(k<M){const i=Math.random()*N*N|0;if(!cells[i].m&&!ban.has(i)){cells[i].m=true;k++}}
     cells.forEach((c,i)=>c.n=around(i).filter(j=>cells[j].m).length)};
@@ -789,6 +859,7 @@ function mines(){
 
 /* ---------- 두더지 잡기 ---------- */
 function mole(){
+  const MS=byLv(1.35,1,.72),BOMB=lvl()==="h";
   shell("mole",`<div><small>남은 시간</small><b id="wt">30.0</b></div><div><small>점수</small><b id="wsc">0</b></div>`,
     `<div class="holes" id="hs">${[...Array(9)].map((_,i)=>`<button class="hole" data-i="${i}" aria-label="구멍 ${i+1}"><span class="mole"></span></button>`).join("")}</div>`,
     `<div class="row"><button class="btn" id="wgo">시작</button><span class="hint" id="wh">30초 동안 최대한 많이 잡으세요</span></div>`);
@@ -800,16 +871,16 @@ function mole(){
     if(!running)return;
     const left=(end-performance.now())/1000, speed=Math.max(0,1-left/30);
     const free=holes.filter(h=>!h.classList.contains("up"));
-    if(free.length){const h=free[Math.random()*free.length|0];const gold=Math.random()<.12;
-      h.classList.remove("hit");h.classList.add("up");h.classList.toggle("gold",gold);
-      later(()=>h.classList.remove("up"),(gold?620:900)-speed*300)}
-    later(pop,700-speed*320+Math.random()*200);
+    if(free.length){const h=free[Math.random()*free.length|0];const gold=Math.random()<.12,bomb=BOMB&&!gold&&Math.random()<.2;
+      h.classList.remove("hit");h.classList.add("up");h.classList.toggle("gold",gold);h.classList.toggle("bomb",bomb);
+      later(()=>h.classList.remove("up"),((gold?620:900)-speed*300)*MS)}
+    later(pop,(700-speed*320+Math.random()*200)*MS);
   };
-  const whack=h=>{if(!running||!h.classList.contains("up"))return;const pts=h.classList.contains("gold")?3:1;score+=pts;sfx(pts>1?"good":"hit");$("#wsc").textContent=score;
-    h.classList.remove("up");h.classList.add("hit");const p=document.createElement("span");p.className="plus";p.textContent="+"+pts;h.appendChild(p);later(()=>p.remove(),500)};
+  const whack=h=>{if(!running||!h.classList.contains("up"))return;const pts=h.classList.contains("bomb")?-3:h.classList.contains("gold")?3:1;score=Math.max(0,score+pts);sfx(pts<0?"miss":pts>1?"good":"hit");$("#wsc").textContent=score;
+    h.classList.remove("up");h.classList.add("hit");const p=document.createElement("span");p.className="plus";p.textContent=(pts>0?"+":"")+pts;h.appendChild(p);later(()=>p.remove(),500)};
   holes.forEach(h=>h.addEventListener("pointerdown",e=>{e.preventDefault();whack(h)}));
-  const stop=()=>{running=false;timers.forEach(clearTimeout);timers=[];clearInterval(clock);holes.forEach(h=>h.classList.remove("up","gold"))};
-  const start=()=>{stop();score=0;$("#wsc").textContent=0;running=true;end=performance.now()+30000;$("#wgo").hidden=true;$("#wh").textContent="황금 두더지는 3점!";
+  const stop=()=>{running=false;timers.forEach(clearTimeout);timers=[];clearInterval(clock);holes.forEach(h=>h.classList.remove("up","gold","bomb"))};
+  const start=()=>{stop();score=0;$("#wsc").textContent=0;running=true;end=performance.now()+30000;$("#wgo").hidden=true;$("#wh").textContent=BOMB?"황금 두더지 3점 · 검은 폭탄 두더지는 -3점!":"황금 두더지는 3점!";
     clock=setInterval(()=>{const l=Math.max(0,(end-performance.now())/1000);$("#wt").textContent=l.toFixed(1);if(l<=0){stop();$("#wgo").hidden=false;$("#wgo").textContent="다시 하기";$("#wh").textContent=`끝! ${score}점`;saveScore("mole",score)}},100);
     later(pop,400)};
   $("#wgo").onclick=start;
@@ -819,6 +890,9 @@ function mole(){
 /* ---------- 타자 연습 ---------- */
 function typing(){
   const WORDS="사과 바다 하늘 학교 친구 컴퓨터 키보드 모니터 자바스크립트 전자기학 자료구조 알고리즘 도서관 운동장 기숙사 시험공부 과제 발표 졸업 강의실 교수님 동아리 축제 방학 여행 기차 비행기 버스 지하철 자전거 커피 라면 김밥 떡볶이 치킨 피자 햄버거 아이스크림 초콜릿 딸기 수박 포도 바나나 고양이 강아지 토끼 호랑이 다람쥐 펭귄 코끼리 무지개 별빛 달빛 햇살 바람 구름 눈사람 크리스마스 생일 선물 편지 사진 음악 노래 영화 드라마 게임 마인크래프트 주사위 보드게임 오락실 반응속도 스네이크 테트리스 지뢰찾기 두더지 프로그래밍 변수 함수 배열 객체 반복문 조건문 서버 데이터 네트워크 인터넷 스마트폰 노트북 충전기 이어폰 창원 경상남도 대한민국 서울 부산 제주도".split(" ");
+  const HARD="데이터베이스 운영체제 컴파일러 인공지능 머신러닝 스마트물류 경진대회 전자기파 맥스웰방정식 미분방정식 확률분포 확률과정 자료구조론 객체지향 프로그래머 시험기간 기말고사 중간고사 아메리카노 카페라떼 롤러코스터 놀이공원 해수욕장 한라산 지리산 백두산 광안대교 해운대 마산합포구 의창구 성산구 진해구".split(" ");
+  /* 난이도별 단어: 쉬움은 두 글자 이하, 어려움은 네 글자 이상 */
+  const POOL=lvl()==="e"?WORDS.filter(w=>w.length<=2):lvl()==="h"?[...WORDS.filter(w=>w.length>=4),...HARD]:WORDS;
   shell("typing",`<div><small>남은 시간</small><b id="yt">60</b></div><div><small>타수</small><b id="ys">0</b></div><div><small>정확도</small><b id="ya">—</b></div>`,
     `<div class="type-stage"><div class="word" id="yw">준비되면 시작</div><div class="upnext" id="yn"></div>
       <input class="type-in" id="yi" placeholder="시작 버튼을 누르세요" autocomplete="off" autocapitalize="off" spellcheck="false" disabled aria-label="단어 입력"></div>`,
@@ -827,7 +901,7 @@ function typing(){
   /* 한글 음절을 초성·중성·종성으로 분해해서 실제 키 입력 수(타수)를 계산 */
   const strokes=w=>[...w].reduce((s,ch)=>{const c=ch.charCodeAt(0)-0xAC00;if(c<0||c>11171)return s+1;const jung=(c%588)/28|0,jong=c%28;return s+1+(J2.has(jung)?2:1)+(jong?(K2.has(jong)?2:1):0)},0);
   const inp=$("#yi");let queue=[],keys=0,ok=0,bad=0,t0=0,clock=null,running=false,pending=false;
-  const pick=()=>WORDS[Math.random()*WORDS.length|0];
+  const pick=()=>POOL[Math.random()*POOL.length|0];
   const show=()=>{$("#yw").textContent=queue[0];$("#yn").innerHTML=queue.slice(1,4).map(w=>`<span>${w}</span>`).join("")};
   const stats=()=>{const el=Math.max(1,(performance.now()-t0)/1000);$("#ys").textContent=Math.round(keys*60/el);$("#ya").textContent=ok+bad?Math.round(ok/(ok+bad)*100)+"%":"—"};
   const submit=()=>{
@@ -852,15 +926,15 @@ function typing(){
 function breakout(){
   shell("breakout",`<div><small>점수</small><b id="bs">0</b></div><div><small>목숨</small><b id="bl">3</b></div><div><small>판</small><b id="bv">1</b></div>`,
     `<div class="box" style="aspect-ratio:44/52"><canvas id="bc"></canvas><div class="overlay" id="bov"><strong>벽돌깨기</strong><button class="btn" id="bgo">시작</button><span class="hint">마우스 · 터치 · ←→ 로 판 움직이기</span></div></div>`);
-  const cv=$("#bc"),Wd=440,Hd=520,ctx=hiDPI(cv,Wd,Hd),COLS=8,ROWS=5,BW=Wd/COLS,BH=22,TOP=56,PW=84,PH=12,PY=Hd-40,R=7;
-  const ROWCOL=["--c-brick","--c-reaction","--c-2048","--c-snake","--c-tetris"];
+  const cv=$("#bc"),Wd=440,Hd=520,ctx=hiDPI(cv,Wd,Hd),COLS=8,ROWS=byLv(4,5,6),BW=Wd/COLS,BH=22,TOP=56,PW=byLv(112,84,62),PH=12,PY=Hd-40,R=7;
+  const ROWCOL=["--c-brick","--c-reaction","--c-2048","--c-snake","--c-tetris","--c-memory"];
   let bricks=[],px=(Wd-PW)/2,bx=Wd/2,by=PY-R,vx=0,vy=0,score=0,lives=3,level=1,alive=false,stuck=true,raf=null,last=0,deadAt=0;
   const hud=()=>{$("#bs").textContent=score;$("#bl").textContent=lives;$("#bv").textContent=level};
   const build=()=>{bricks=[];for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)bricks.push({x:c*BW,y:TOP+r*BH,r,on:true})};
   const clampP=()=>{px=Math.max(0,Math.min(Wd-PW,px))};
   const serve=()=>{stuck=true;vx=0;vy=0};
   /* 공 발사: 판이 올라갈수록 빨라져요 */
-  const launch=()=>{if(!alive||!stuck)return;stuck=false;const sp=250+level*35,a=(Math.random()-.5)*1.2;vx=sp*Math.sin(a);vy=-sp*Math.cos(a)};
+  const launch=()=>{if(!alive||!stuck)return;stuck=false;const sp=byLv(205,250,300)+level*35,a=(Math.random()-.5)*1.2;vx=sp*Math.sin(a);vy=-sp*Math.cos(a)};
   const draw=()=>{
     ctx.clearRect(0,0,Wd,Hd);
     bricks.forEach(b=>{if(!b.on)return;ctx.fillStyle=css(ROWCOL[b.r]);ctx.beginPath();ctx.roundRect(b.x+2,b.y+2,BW-4,BH-4,4);ctx.fill()});
@@ -902,6 +976,7 @@ function breakout(){
 
 /* ---------- 점프 달리기 ---------- */
 function runner(){
+  const RS=byLv([240,600,.7],[300,760,.9],[380,940,1.1]);
   shell("runner",`<div><small>거리</small><b id="rd">0</b></div>`,
     `<div class="box" style="max-width:600px;aspect-ratio:60/22"><canvas id="rc"></canvas><div class="overlay" id="rov"><strong>점프 달리기</strong><button class="btn" id="rgo">시작</button><span class="hint">스페이스 · ↑ · 화면 터치로 점프</span></div></div>`);
   const cv=$("#rc"),Wd=600,Hd=220,GY=180,ctx=hiDPI(cv,Wd,Hd),PX=60,PS=30;
@@ -916,7 +991,7 @@ function runner(){
   };
   const step=dt=>{
     /* 달릴수록 빨라지고, 중력으로 점프 높이가 줄어들어요 */
-    speed=Math.min(760,300+dist*.9);dist+=speed*dt/30;
+    speed=Math.min(RS[1],RS[0]+dist*RS[2]);dist+=speed*dt/30;
     vy-=1900*dt;y+=vy*dt;if(y<=0){y=0;vy=0}
     obs.forEach(o=>{o.x-=speed*dt});obs=obs.filter(o=>o.x+o.w>-10);
     /* 장애물 간격은 현재 속도에 비례: 언제나 뛰어넘을 수 있는 거리 */
@@ -937,21 +1012,22 @@ function runner(){
 
 /* ---------- 순서 기억 ---------- */
 function seq(){
+  const NP=byLv(4,4,6);
   shell("seq",`<div><small>성공한 단계</small><b id="qs">0</b></div>`,
-    `<div class="seq" id="qp">${[0,1,2,3].map(i=>`<button class="qpad q${i}" data-i="${i}" aria-label="패드 ${i+1}"></button>`).join("")}</div>`,
+    `<div class="seq" id="qp" style="grid-template-columns:repeat(${NP>4?3:2},1fr);max-width:${NP>4?420:340}px">${[...Array(NP).keys()].map(i=>`<button class="qpad q${i}" data-i="${i}" aria-label="패드 ${i+1}"></button>`).join("")}</div>`,
     `<div class="row" style="justify-content:center"><button class="btn" id="qgo">시작</button><span class="hint" id="qh">불이 켜지는 순서를 기억하세요</span></div>`);
-  const pads=[...document.querySelectorAll(".qpad")],TONE=[330,392,494,587];
+  const pads=[...document.querySelectorAll(".qpad")],TONE=[330,392,494,587,659,784];
   let order=[],pos=0,accept=false,timers=[];
   const later=(f,ms)=>{timers.push(setTimeout(f,ms))};
   const flash=(i,ms)=>{pads[i].classList.add("lit");tone(TONE[i],ms/1000,"triangle",.08);later(()=>pads[i].classList.remove("lit"),ms)};
   /* 단계가 올라갈수록 보여주는 속도가 빨라져요 */
   const show=()=>{
     accept=false;$("#qh").textContent="순서를 잘 보세요";
-    const gap=Math.max(260,560-order.length*22);
+    const gap=Math.max(byLv(380,260,200),byLv(720,560,440)-order.length*22);
     order.forEach((p,k)=>later(()=>flash(p,gap*.6),500+k*gap));
     later(()=>{accept=true;pos=0;$("#qh").textContent="이제 따라 누르세요"},500+order.length*gap);
   };
-  const next=()=>{order.push(Math.random()*4|0);show()};
+  const next=()=>{order.push(Math.random()*NP|0);show()};
   const press=i=>{
     if(!accept)return;
     flash(i,180);
@@ -972,24 +1048,25 @@ function seq(){
 
 /* ---------- 숫자 터치 ---------- */
 function num(){
+  const NN=byLv(16,25,36),NC=Math.sqrt(NN);
   shell("num",`<div><small>시간</small><b id="nt">0.00</b></div><div><small>다음 숫자</small><b id="nn">1</b></div>`,
-    `<div class="numgrid" id="ng"></div>`,`<div class="row"><button class="btn ghost" id="nr">다시 섞기</button><span class="hint" id="nh">1을 누르면 시간이 시작돼요</span></div>`);
+    `<div class="numgrid" id="ng" style="grid-template-columns:repeat(${NC},1fr)"></div>`,`<div class="row"><button class="btn ghost" id="nr">다시 섞기</button><span class="hint" id="nh">1을 누르면 시간이 시작돼요</span></div>`);
   let want=1,t0=null,tick=null;
   const start=()=>{
     clearInterval(tick);want=1;t0=null;$("#nt").textContent="0.00";$("#nn").textContent=1;$("#nh").textContent="1을 누르면 시간이 시작돼요";
     /* 피셔-예이츠 셔플로 1~25를 고르게 섞어요 */
-    const a=[...Array(25)].map((_,i)=>i+1);
+    const a=[...Array(NN)].map((_,i)=>i+1);
     for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}
     $("#ng").innerHTML=a.map(n=>`<button class="ncell" data-n="${n}">${n}</button>`).join("");
   };
   $("#ng").addEventListener("pointerdown",e=>{
-    const b=e.target.closest(".ncell");if(!b||want>25)return;
+    const b=e.target.closest(".ncell");if(!b||want>NN)return;
     e.preventDefault();
     if(+b.dataset.n!==want){b.classList.remove("bad");void b.offsetWidth;b.classList.add("bad");sfx("miss");return}
     if(want===1){t0=performance.now();tick=setInterval(()=>{$("#nt").textContent=((performance.now()-t0)/1000).toFixed(2)},50)}
     b.classList.add("hit");sfx("tick");want++;
-    $("#nn").textContent=want>25?"끝":want;
-    if(want>25){clearInterval(tick);const t=Math.round((performance.now()-t0)/10)/100;$("#nt").textContent=t.toFixed(2);$("#nh").textContent=`완료! ${t.toFixed(2)}초`;saveScore("num",t)}
+    $("#nn").textContent=want>NN?"끝":want;
+    if(want>NN){clearInterval(tick);const t=Math.round((performance.now()-t0)/10)/100;$("#nt").textContent=t.toFixed(2);$("#nh").textContent=`완료! ${t.toFixed(2)}초`;saveScore("num",t)}
   });
   $("#nr").onclick=start;start();
   return ()=>clearInterval(tick);
@@ -997,13 +1074,14 @@ function num(){
 
 /* ---------- 조준 연습 ---------- */
 function aim(){
+  const AS=byLv([50,30],[34,30],[22,22]),PEN=byLv(1,1,2);
   shell("aim",`<div><small>남은 시간</small><b id="at">30.0</b></div><div><small>점수</small><b id="as">0</b></div><div><small>명중률</small><b id="aa">—</b></div>`,
     `<div class="aimbox" id="ab"><button class="target" id="tg" hidden aria-label="과녁"></button><div class="overlay" id="aov"><strong>조준 연습</strong><button class="btn" id="ago">시작</button><span class="hint">과녁은 점점 작아져요</span></div></div>`);
   const box=$("#ab"),tg=$("#tg");
   let score=0,hits=0,shots=0,end=0,clock=null,running=false;
   /* 과녁을 새 위치로: 남은 시간이 줄수록 작아져요 (64px → 34px) */
   const move=()=>{
-    const left=Math.max(0,(end-performance.now())/30000),size=Math.round(34+left*30);
+    const left=Math.max(0,(end-performance.now())/30000),size=Math.round(AS[0]+left*AS[1]);
     tg.style.width=tg.style.height=size+"px";
     tg.style.left=Math.random()*(box.clientWidth-size)+"px";
     tg.style.top=Math.random()*(box.clientHeight-size)+"px";
@@ -1012,7 +1090,7 @@ function aim(){
   box.addEventListener("pointerdown",e=>{
     if(!running)return;
     e.preventDefault();shots++;
-    if(e.target===tg){hits++;score++;sfx("hit");move()}else{score=Math.max(0,score-1);sfx("miss")}
+    if(e.target===tg){hits++;score++;sfx("hit");move()}else{score=Math.max(0,score-PEN);sfx("miss")}
     hud();
   });
   const finish=()=>{running=false;clearInterval(clock);tg.hidden=true;const ov=$("#aov");ov.hidden=false;ov.innerHTML=`<strong>${score}점</strong><span class="hint">명중률 ${shots?Math.round(hits/shots*100):0}%</span><button class="btn" id="ago">다시 하기</button>`;$("#ago").onclick=start;saveScore("aim",score)};
@@ -1035,7 +1113,7 @@ function math(){
   const rnd=(a,b)=>a+(Math.random()*(b-a+1)|0);
   /* 5문제를 맞힐 때마다 난이도(lv)가 올라가 숫자가 커져요 */
   const make=()=>{
-    const lv=Math.min(4,1+(n/5|0)),op=["+","-","×"][rnd(0,lv>1?2:1)];
+    const lv=Math.min(byLv(2,4,6),byLv(1,1,3)+(n/5|0)),op=["+","-","×"][rnd(0,lvl()==="e"?1:(lv>1?2:1))];
     let a,b;
     if(op==="×"){a=rnd(2,4+lv*2);b=rnd(2,9);ans=a*b}
     else{a=rnd(5,10*lv+10);b=rnd(2,10*lv);if(op==="-"){if(b>a)[a,b]=[b,a];ans=a-b}else ans=a+b}
@@ -1085,6 +1163,7 @@ function stackOffsets(col,ch,maxH){
 
 /* ---------- 솔리테어 ---------- */
 function klondike(){
+  const EZ=lvl()==="e",DRAW=lvl()==="h"?3:1;
   shell("klondike",`<div><small>시간</small><b id="kt">0</b></div><div><small>이동</small><b id="km">0</b></div>`,
     `<div class="felt" id="kb"></div>`,
     `<div class="row"><button class="btn ghost" id="kn">새 게임</button><button class="btn ghost" id="ku">되돌리기</button><span class="hint" id="kh">카드를 누르면 갈 수 있는 곳으로 알아서 옮겨져요</span></div>`);
@@ -1098,7 +1177,7 @@ function klondike(){
     S.stock=d;hist=[];t0=null;done=false;clearInterval(tick);clearInterval(auto);
     $("#kt").textContent=0;$("#kh").textContent="카드를 누르면 갈 수 있는 곳으로 알아서 옮겨져요";render();
   };
-  const canStack=(a,b)=>b?(b.up&&a.r===b.r-1&&isRed(a)!==isRed(b)):a.r===13;
+  const canStack=(a,b)=>b?(b.up&&a.r===b.r-1&&isRed(a)!==isRed(b)):(EZ||a.r===13);
   const canFound=a=>{const f=S.found[a.s];return f.length?topOf(f).r===a.r-1:a.r===1};
   const snap=()=>{hist.push(JSON.stringify(S));if(hist.length>300)hist.shift()};
   /* 옮길 곳 후보: 카드가 있는 열을 먼저, 빈 열은 나중에 */
@@ -1119,7 +1198,7 @@ function klondike(){
     return false;
   };
   const tapStock=()=>{
-    if(S.stock.length){snap();const c=S.stock.pop();c.up=true;S.waste.push(c);return true}
+    if(S.stock.length){snap();for(let n=0;n<DRAW&&S.stock.length;n++){const c=S.stock.pop();c.up=true;S.waste.push(c)}return true}
     if(!S.waste.length)return false;
     snap();S.stock=S.waste.reverse().map(c=>({...c,up:false}));S.waste=[];return true;
   };
@@ -1179,14 +1258,15 @@ function klondike(){
 
 /* ---------- 프리셀 ---------- */
 function freecell(){
+  const NC=byLv(5,4,3);
   shell("freecell",`<div><small>시간</small><b id="ft">0</b></div><div><small>이동</small><b id="fm">0</b></div>`,
     `<div class="felt" id="fb"></div>`,
-    `<div class="row"><button class="btn ghost" id="fn">새 게임</button><button class="btn ghost" id="fu">되돌리기</button><span class="hint" id="fh">모든 카드가 앞면이에요. 왼쪽 위 빈칸 4개에 카드를 잠시 둘 수 있어요</span></div>`);
+    `<div class="row"><button class="btn ghost" id="fn">새 게임</button><button class="btn ghost" id="fu">되돌리기</button><span class="hint" id="fh">모든 카드가 앞면이에요. 왼쪽 위 빈칸 ${NC}개에 카드를 잠시 둘 수 있어요</span></div>`);
   const b=$("#fb");
   let S,hist=[],t0=null,tick=null,done=false;
   const deal=()=>{
     const d=newDeck();
-    S={cells:[null,null,null,null],found:[[],[],[],[]],tab:[[],[],[],[],[],[],[],[]],moves:0};
+    S={cells:Array(NC).fill(null),found:[[],[],[],[]],tab:[[],[],[],[],[],[],[],[]],moves:0};
     d.forEach((c,i)=>{c.up=true;S.tab[i%8].push(c)});
     hist=[];t0=null;done=false;clearInterval(tick);$("#ft").textContent=0;autoFound();render();
   };
@@ -1202,7 +1282,7 @@ function freecell(){
     let moved=true;
     while(moved){
       moved=false;
-      for(let k=0;k<4;k++){const c=S.cells[k];if(c&&canFound(c)&&safe(c)){S.found[c.s].push(c);S.cells[k]=null;moved=true}}
+      for(let k=0;k<S.cells.length;k++){const c=S.cells[k];if(c&&canFound(c)&&safe(c)){S.found[c.s].push(c);S.cells[k]=null;moved=true}}
       for(const col of S.tab){const c=topOf(col);if(c&&canFound(c)&&safe(c)){S.found[c.s].push(col.pop());moved=true}}
     }
   }
@@ -1226,8 +1306,8 @@ function freecell(){
   };
   const render=()=>{
     const cw=fitCards(b,8,5),ch=cw*1.4;
-    let h=`<div class="crow" style="grid-template-columns:repeat(8,1fr)">`;
-    for(let k=0;k<4;k++)h+=`<div class="slot cell" data-loc="c:${k}">${S.cells[k]?cardEl(S.cells[k],"c:"+k,0):""}</div>`;
+    let h=`<div class="crow" style="grid-template-columns:repeat(${NC+4},1fr)">`;
+    for(let k=0;k<NC;k++)h+=`<div class="slot cell" data-loc="c:${k}">${S.cells[k]?cardEl(S.cells[k],"c:"+k,0):""}</div>`;
     for(let k=0;k<4;k++)h+=`<div class="slot" data-loc="f:${k}">${S.found[k].length?cardEl(topOf(S.found[k]),"f:"+k,0):`<span class="mark">${SUIT[k]}</span>`}</div>`;
     h+=`</div><div class="crow tab" style="grid-template-columns:repeat(8,1fr)">`;
     const maxH=Math.max(ch*4,innerHeight*.62);
@@ -1259,6 +1339,7 @@ function freecell(){
 
 /* ---------- 블랙잭 ---------- */
 function blackjack(){
+  const SEE=lvl()==="e",H17=lvl()==="h",BJ=byLv(2.5,2.5,2);
   shell("blackjack",`<div><small>칩</small><b id="jc">1000</b></div><div><small>판</small><b id="jn">0/10</b></div><div><small>이번 베팅</small><b id="jbv">0</b></div>`,
     `<div class="felt bj"><div class="bjrow"><small>딜러 <b id="jdv"></b></small><div class="hand" id="jd"></div></div>
       <div class="bjmsg" id="jm">베팅할 금액을 고르세요</div>
@@ -1266,12 +1347,13 @@ function blackjack(){
     `<div class="row" id="jbet">${[50,100,200,500].map(v=>`<button class="btn ghost" data-bet="${v}">${v} 걸기</button>`).join("")}</div>
      <div class="row" id="jact" hidden><button class="btn" id="jh">한 장 더 (히트)</button><button class="btn ghost" id="js">멈추기 (스탠드)</button><button class="btn ghost" id="jx">두 배 (더블)</button></div>
      <div class="row" id="jend" hidden><button class="btn" id="jr">다시 하기</button></div>
-     <p class="hint">칩 1000개로 10판을 해서 남은 칩이 기록돼요. 블랙잭은 1.5배, 딜러는 17 이상에서 멈춰요.</p>`);
+     <p class="hint">칩 1000개로 10판을 해서 남은 칩이 기록돼요. ${H17?"블랙잭은 1배, 딜러는 A가 낀 17이면 한 장 더 받아요.":"블랙잭은 1.5배, 딜러는 17 이상에서 멈춰요."}${SEE?" 딜러의 뒤집힌 카드가 보여요.":""}</p>`);
   let chips=1000,hands=0,bet=0,shoe=[],P=[],D=[],busy=false,timers=[];
   const later=(f,ms)=>{timers.push(setTimeout(f,ms))};
   const draw=(up=true)=>{if(shoe.length<12)shoe=newDeck();const c=shoe.pop();c.up=up;return c};
   /* 점수 계산: A는 1로 세고, 21을 넘지 않으면 11로 바꿔요 */
   const value=h=>{let t=0,aces=0;h.forEach(c=>{if(!c.up)return;t+=Math.min(10,c.r);if(c.r===1)aces++});if(aces&&t+10<=21)t+=10;return t};
+  const isSoft=h=>{let t=0,a=0;h.forEach(c=>{t+=Math.min(10,c.r);if(c.r===1)a++});return a>0&&t+10<=21};
   const paint=()=>{
     $("#jd").innerHTML=D.map(c=>cardEl(c)).join("");$("#jp").innerHTML=P.map(c=>cardEl(c)).join("");
     $("#jdv").textContent=D.length?value(D):"";$("#jpv").textContent=P.length?value(P):"";
@@ -1296,16 +1378,16 @@ function blackjack(){
   };
   const dealerPlay=()=>{
     busy=true;show(null);D[1].up=true;paint();
-    const step=()=>{if(value(D)<17){D.push(draw());sfx("tick");paint();later(step,450)}else settle()};
+    const step=()=>{if(value(D)<17||(H17&&value(D)===17&&isSoft(D))){D.push(draw());sfx("tick");paint();later(step,450)}else settle()};
     later(step,450);
   };
   document.querySelectorAll("[data-bet]").forEach(x=>x.onclick=()=>{
     const v=+x.dataset.bet;if(busy||v>chips)return;
-    bet=v;chips-=v;P=[draw(),draw()];D=[draw(),draw(false)];sfx("tick");paint();
+    bet=v;chips-=v;P=[draw(),draw()];D=[draw(),draw(SEE)];sfx("tick");paint();
     if(value(P)===21){
       D[1].up=true;paint();
       if(value(D)===21)return finish("둘 다 블랙잭! 비겼어요",bet);
-      return finish(`블랙잭! ${Math.floor(bet*2.5)}개 받음`,Math.floor(bet*2.5));
+      return finish(`블랙잭! ${Math.floor(bet*BJ)}개 받음`,Math.floor(bet*BJ));
     }
     $("#jm").textContent="한 장 더 받을까요?";show("jact");
   });
@@ -1324,12 +1406,17 @@ function hilo(){
       <div class="bjmsg" id="lm">다음 카드가 더 높을까요, 낮을까요?</div></div>`,
     `<div class="row" style="justify-content:center"><button class="btn" id="lh">높다 ▲</button><button class="btn" id="ll">낮다 ▼</button><button class="btn ghost" id="lr" hidden>다시 하기</button></div>
      <p class="hint">A가 가장 낮고 K가 가장 높아요. 같은 숫자가 나오면 그냥 넘어가요. ↑↓ 키로도 할 수 있어요.</p>`);
-  let deck=[],cur,streak=0,busy=false,over=false,timers=[];
+  let deck=[],cur,streak=0,busy=false,over=false,timers=[],tmo=null;
+  /* 쉬움: 남은 카드로 계산한 확률 힌트 · 어려움: 3초 안에 골라야 해요 */
+  const hint=()=>{if(lvl()!=="e"||!cur)return "";const t=deck.length||1,hi=deck.filter(c=>c.r>cur.r).length,lo=deck.filter(c=>c.r<cur.r).length;return ` (높음 ${Math.round(hi/t*100)}% · 낮음 ${Math.round(lo/t*100)}%)`};
+  const ask=()=>"다음 카드가 더 높을까요, 낮을까요?"+hint();
+  const lose=m=>{clearTimeout(tmo);over=true;busy=false;sfx("lose");$("#lm").textContent=`${m} 연속 ${streak}번 정답`;$("#lh").hidden=$("#ll").hidden=true;$("#lr").hidden=false;if(streak>0)saveScore("hilo",streak)};
+  const arm3=()=>{clearTimeout(tmo);if(lvl()==="h")tmo=setTimeout(()=>{if(!busy&&!over)lose("시간 초과!")},3000)};
   const draw=()=>{if(!deck.length)deck=newDeck();const c=deck.pop();c.up=true;return c};
   const paint=nextCard=>{$("#lc").innerHTML=cardEl(cur);$("#ln").innerHTML=cardEl(nextCard||{s:0,r:1,up:false});$("#ls").textContent=streak};
-  const start=()=>{deck=newDeck();cur=draw();streak=0;over=false;busy=false;$("#lm").textContent="다음 카드가 더 높을까요, 낮을까요?";$("#lr").hidden=true;$("#lh").hidden=$("#ll").hidden=false;paint()};
+  const start=()=>{deck=newDeck();cur=draw();streak=0;over=false;busy=false;$("#lm").textContent=ask();$("#lr").hidden=true;$("#lh").hidden=$("#ll").hidden=false;paint();arm3()};
   const guess=up=>{
-    if(busy||over)return;busy=true;
+    if(busy||over)return;busy=true;clearTimeout(tmo);
     const n=draw();paint(n);
     if(n.r===cur.r){$("#lm").textContent="같은 숫자! 그냥 넘어가요";sfx("tick")}
     else if((n.r>cur.r)===up){streak++;$("#ls").textContent=streak;$("#lm").textContent="정답!";sfx("hit")}
@@ -1337,16 +1424,168 @@ function hilo(){
       over=true;busy=false;sfx("lose");$("#lm").textContent=`틀렸어요! 연속 ${streak}번 정답`;
       $("#lh").hidden=$("#ll").hidden=true;$("#lr").hidden=false;if(streak>0)saveScore("hilo",streak);return;
     }
-    timers.push(setTimeout(()=>{cur=n;busy=false;$("#lm").textContent="다음 카드가 더 높을까요, 낮을까요?";paint()},650));
+    timers.push(setTimeout(()=>{cur=n;busy=false;$("#lm").textContent=ask();paint();arm3()},650));
   };
   $("#lh").onclick=()=>guess(true);$("#ll").onclick=()=>guess(false);$("#lr").onclick=start;
   const off=onKeys({up:()=>guess(true),down:()=>guess(false),enter:()=>{if(over)start()}});
   start();
-  return ()=>{timers.forEach(clearTimeout);off()};
+  return ()=>{timers.forEach(clearTimeout);clearTimeout(tmo);off()};
+}
+
+/* ---------- 슬라이드 퍼즐 ---------- */
+function slide(){
+  const N=byLv(3,4,5),NN=N*N;
+  shell("slide",`<div><small>시간</small><b id="pt">0.0</b></div><div><small>이동</small><b id="pm">0</b></div>`,
+    `<div class="slide" id="pb" style="grid-template-columns:repeat(${N},1fr)"></div>`,
+    `<div class="row"><button class="btn ghost" id="pn">새로 섞기</button><span class="hint" id="ph">빈칸 옆 숫자를 눌러 1부터 순서대로 맞추세요. 방향키도 돼요</span></div>`);
+  let t=[],empty=NN-1,moves=0,t0=null,tick=null,done=false;
+  const near=i=>{const x=i%N,y=i/N|0,r=[];if(x>0)r.push(i-1);if(x<N-1)r.push(i+1);if(y>0)r.push(i-N);if(y<N-1)r.push(i+N);return r};
+  const swap=p=>{t[empty]=t[p];t[p]=0;empty=p};
+  const solved=()=>t.every((v,i)=>v===(i+1)%NN);
+  const draw=()=>{$("#pb").innerHTML=t.map((v,i)=>v?`<button class="ptile${v===i+1?" ok":""}" data-i="${i}">${v}</button>`:`<div class="pblank"></div>`).join("")};
+  /* 항상 풀 수 있게: 완성된 판에서 빈칸을 무작위로 여러 번 움직여서 섞어요 */
+  const shuffle=()=>{
+    t=[...Array(NN).keys()].map(i=>(i+1)%NN);empty=NN-1;let last=-1;
+    for(let k=0;k<NN*40;k++){const nb=near(empty).filter(x=>x!==last);const p=nb[Math.random()*nb.length|0];last=empty;swap(p)}
+    if(solved())return shuffle();
+    moves=0;t0=null;done=false;clearInterval(tick);$("#pt").textContent="0.0";$("#pm").textContent=0;
+    $("#ph").textContent="빈칸 옆 숫자를 눌러 1부터 순서대로 맞추세요. 방향키도 돼요";draw();
+  };
+  const tap=i=>{
+    if(done||!near(empty).includes(i))return;
+    if(!t0){t0=performance.now();tick=setInterval(()=>$("#pt").textContent=((performance.now()-t0)/1000).toFixed(1),100)}
+    swap(i);moves++;$("#pm").textContent=moves;sfx("tick");draw();
+    if(solved()){done=true;clearInterval(tick);const s=Math.round((performance.now()-t0)/100)/10;$("#pt").textContent=s.toFixed(1);$("#ph").textContent=`완성! ${s.toFixed(1)}초 · ${moves}번 이동`;saveScore("slide",s)}
+  };
+  $("#pb").addEventListener("pointerdown",e=>{const b=e.target.closest(".ptile");if(b){e.preventDefault();tap(+b.dataset.i)}});
+  /* 방향키: 누른 방향으로 빈칸 옆 타일을 밀어요 */
+  const mv=(dx,dy)=>{const x=empty%N,y=empty/N|0,X=x-dx,Y=y-dy;if(X>=0&&Y>=0&&X<N&&Y<N)tap(Y*N+X)};
+  const off=onKeys({left:()=>mv(-1,0),right:()=>mv(1,0),up:()=>mv(0,-1),down:()=>mv(0,1)});
+  $("#pn").onclick=shuffle;shuffle();
+  return ()=>{clearInterval(tick);off()};
+}
+
+/* ---------- 날개짓 ---------- */
+function flappy(){
+  const F=byLv({gap:175,sp:150,g:1450,jmp:420,int:2},{gap:145,sp:180,g:1650,jmp:450,int:1.65},{gap:118,sp:220,g:1850,jmp:480,int:1.4});
+  shell("flappy",`<div><small>통과</small><b id="fs">0</b></div>`,
+    `<div class="box" style="max-width:420px;aspect-ratio:42/56"><canvas id="fc"></canvas><div class="overlay" id="fov"><strong>날개짓</strong><button class="btn" id="fgo">시작</button><span class="hint">스페이스 · 클릭 · 터치로 날갯짓</span></div></div>`);
+  const cv=$("#fc"),W=420,H=560,ctx=hiDPI(cv,W,H),BX=110,BR=14,PW=62;
+  let y=H/2,vy=0,pipes=[],score=0,alive=false,raf=null,last=0,deadAt=0,spawn=0;
+  const draw=()=>{
+    ctx.clearRect(0,0,W,H);ctx.fillStyle=css("--c-flap");
+    pipes.forEach(p=>{ctx.beginPath();ctx.roundRect(p.x,-10,PW,p.top+10,8);ctx.fill();ctx.beginPath();ctx.roundRect(p.x,p.top+F.gap,PW,H,8);ctx.fill()});
+    ctx.fillStyle=css("--c-2048");ctx.beginPath();ctx.arc(BX,y,BR,0,7);ctx.fill();
+    ctx.fillStyle=css("--surface");ctx.beginPath();ctx.arc(BX+5,y-4,3.5,0,7);ctx.fill();
+    ctx.fillStyle=css("--c-reaction");ctx.beginPath();ctx.moveTo(BX+BR-2,y-1);ctx.lineTo(BX+BR+9,y+3);ctx.lineTo(BX+BR-2,y+7);ctx.fill();
+  };
+  /* 중력으로 계속 떨어지고, 누를 때마다 위로 튀어 올라요 */
+  const step=dt=>{
+    vy+=F.g*dt;y+=vy*dt;spawn-=dt;
+    if(spawn<=0){spawn=F.int;pipes.push({x:W+10,top:50+Math.random()*(H-F.gap-110),scored:false})}
+    pipes.forEach(p=>{p.x-=F.sp*dt;if(!p.scored&&p.x+PW<BX-BR){p.scored=true;score++;$("#fs").textContent=score;sfx("hit")}});
+    pipes=pipes.filter(p=>p.x>-PW-10);
+    if(y>H-BR||y<BR)return end();
+    for(const p of pipes)if(BX+BR-3>p.x&&BX-BR+3<p.x+PW&&(y-BR+3<p.top||y+BR-3>p.top+F.gap))return end();
+  };
+  const frame=t=>{if(!alive)return;const dt=Math.min(.033,(t-last)/1000);last=t;step(dt);if(alive){draw();raf=requestAnimationFrame(frame)}};
+  const start=()=>{if(performance.now()-deadAt<400)return;dropFocus();y=H/2;pipes=[];score=0;spawn=.7;$("#fs").textContent=0;alive=true;$("#fov").hidden=true;vy=-F.jmp;last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(frame)};
+  const end=()=>{alive=false;deadAt=performance.now();cancelAnimationFrame(raf);draw();sfx("lose");const ov=$("#fov");ov.hidden=false;ov.innerHTML=`<strong>${score}개 통과</strong><button class="btn" id="fgo">다시 하기</button><span class="hint">스페이스로도 다시 시작</span>`;$("#fgo").onclick=start;if(score>0)saveScore("flappy",score)};
+  const flap=()=>{if(!alive)return start();vy=-F.jmp;sfx("tick")};
+  cv.addEventListener("pointerdown",e=>{e.preventDefault();flap()});
+  const off=onKeys({space:flap,up:flap,enter:()=>{if(!alive)start()}});
+  $("#fgo").onclick=start;draw();
+  return ()=>{alive=false;cancelAnimationFrame(raf);off()};
+}
+
+/* ---------- 색깔 단어 ---------- */
+function stroop(){
+  const ALL=[["빨강","#E0392B"],["파랑","#2F6FE0"],["초록","#1E9E5A"],["노랑","#D9A400"],["보라","#8E4FD8"],["주황","#E8762B"]];
+  const NC=byLv(3,4,6),C=ALL.slice(0,NC),SHUF=lvl()==="h";
+  shell("stroop",`<div><small>남은 시간</small><b id="st">30.0</b></div><div><small>점수</small><b id="sp">0</b></div>`,
+    `<div class="type-stage"><div class="word" id="sw" style="color:var(--fg)">준비</div><p class="hint">글자의 <b>뜻</b>이 아니라 <b>글자 색</b>을 고르세요</p><div class="sbtns" id="sb"></div></div>`,
+    `<div class="row" style="justify-content:center"><button class="btn" id="sgo">시작</button><span class="hint">30초 · 틀리면 1점 감점</span></div>`);
+  let ink=0,score=0,end=0,clock=null,running=false;
+  const btns=()=>{const o=[...C.keys()];if(SHUF)o.sort(()=>Math.random()-.5);$("#sb").innerHTML=o.map(i=>`<button class="sbtn" data-i="${i}">${C[i][0]}</button>`).join("")};
+  /* 글자 뜻과 글자 색이 대부분 다르게 나와요 (스트룹 효과) */
+  const next=()=>{const w=Math.random()*NC|0;do{ink=Math.random()*NC|0}while(ink===w&&Math.random()<.85);const el=$("#sw");el.textContent=C[w][0];el.style.color=C[ink][1];if(SHUF)btns()};
+  $("#sb").addEventListener("pointerdown",e=>{
+    const b=e.target.closest(".sbtn");if(!b||!running)return;e.preventDefault();
+    if(+b.dataset.i===ink){score++;sfx("hit")}else{score=Math.max(0,score-1);sfx("miss");nope($("#sw"))}
+    $("#sp").textContent=score;next();
+  });
+  const finish=()=>{running=false;clearInterval(clock);const el=$("#sw");el.textContent=`${score}점`;el.style.color="var(--fg)";$("#sgo").hidden=false;$("#sgo").textContent="다시 하기";if(score>0)saveScore("stroop",score)};
+  const start=()=>{score=0;$("#sp").textContent=0;running=true;end=performance.now()+30000;$("#sgo").hidden=true;btns();next();
+    clock=setInterval(()=>{const l=Math.max(0,(end-performance.now())/1000);$("#st").textContent=l.toFixed(1);if(l<=0)finish()},100)};
+  btns();$("#sgo").onclick=start;
+  return ()=>{running=false;clearInterval(clock)};
+}
+
+/* ---------- 다른 색 찾기 ---------- */
+function oddcolor(){
+  const D=byLv({d0:26,dm:6,g0:2,gm:6},{d0:20,dm:4,g0:2,gm:8},{d0:14,dm:2.5,g0:3,gm:9});
+  shell("oddcolor",`<div><small>남은 시간</small><b id="ot">30.0</b></div><div><small>단계</small><b id="ol">0</b></div>`,
+    `<div class="odd" id="ob"></div>`,
+    `<div class="row" style="justify-content:center"><button class="btn" id="ogo">시작</button><span class="hint">색이 살짝 다른 한 칸을 찾으세요 · 틀리면 2초 감점</span></div>`);
+  let stage=0,end=0,clock=null,running=false,odd=-1;
+  /* 단계가 오를수록 칸은 많아지고 색 차이는 작아져요 */
+  const next=()=>{
+    const g=Math.min(D.gm,D.g0+Math.floor(stage/3)),h=Math.random()*360|0,s=55+Math.random()*25,l=42+Math.random()*14,dl=Math.max(D.dm,D.d0-stage*1.2);
+    odd=Math.random()*g*g|0;const base=`hsl(${h} ${s}% ${l}%)`,diff=`hsl(${h} ${s}% ${Math.min(92,l+dl)}%)`;
+    const el=$("#ob");el.style.gridTemplateColumns=`repeat(${g},1fr)`;
+    el.innerHTML=[...Array(g*g)].map((_,i)=>`<button class="ocell" data-i="${i}" style="background:${i===odd?diff:base}" aria-label="칸 ${i+1}"></button>`).join("");
+  };
+  $("#ob").addEventListener("pointerdown",e=>{
+    const b=e.target.closest(".ocell");if(!b||!running)return;e.preventDefault();
+    if(+b.dataset.i===odd){stage++;$("#ol").textContent=stage;sfx("hit");next()}else{end-=2000;sfx("miss");nope(b)}
+  });
+  const finish=()=>{running=false;clearInterval(clock);$("#ob").innerHTML=`<div class="bjmsg" style="grid-column:1/-1;color:var(--fg)">${stage}단계까지 갔어요</div>`;$("#ogo").hidden=false;$("#ogo").textContent="다시 하기";if(stage>0)saveScore("oddcolor",stage)};
+  const start=()=>{stage=0;$("#ol").textContent=0;running=true;end=performance.now()+30000;$("#ogo").hidden=true;next();
+    clock=setInterval(()=>{const l=Math.max(0,(end-performance.now())/1000);$("#ot").textContent=l.toFixed(1);if(l<=0)finish()},100)};
+  $("#ogo").onclick=start;
+  return ()=>{running=false;clearInterval(clock)};
+}
+
+/* ---------- 틱택토 ---------- */
+function ttt(){
+  shell("ttt",`<div><small>점수</small><b id="xs">0</b></div><div><small>판</small><b id="xn">0</b></div>`,
+    `<div class="ttt" id="xb"></div><div class="bjmsg" id="xm" style="color:var(--fg);margin-top:12px">당신 차례 (○)</div>`,
+    `<div class="row" style="justify-content:center"><button class="btn" id="xr" hidden>새로 시작</button><span class="hint">이기면 3점, 비기면 1점. 지면 끝나고 점수가 기록돼요</span></div>`);
+  const L=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  let b=Array(9).fill(null),score=0,games=0,turn="O",over=false,first=true,timers=[];
+  const win=(s,p)=>L.some(l=>l.every(i=>s[i]===p));
+  const free=s=>s.map((v,i)=>v?-1:i).filter(i=>i>=0);
+  /* 미니맥스: 모든 경우를 끝까지 따져 보는 '지지 않는' 수 */
+  const mm=(s,p,d)=>{if(win(s,"X"))return 10-d;if(win(s,"O"))return d-10;const f=free(s);if(!f.length)return 0;
+    const v=f.map(i=>{s[i]=p;const r=mm(s,p==="X"?"O":"X",d+1);s[i]=null;return r});return p==="X"?Math.max(...v):Math.min(...v)};
+  const ai=()=>{
+    const f=free(b),d=lvl();
+    if(d==="e"&&Math.random()<.75)return f[Math.random()*f.length|0];
+    if(d!=="h"){
+      for(const p of ["X","O"])for(const i of f){b[i]=p;const w=win(b,p);b[i]=null;if(w)return i}
+      if(b[4]==null&&Math.random()<.6)return 4;
+      return f[Math.random()*f.length|0];
+    }
+    let best=-99,mv=f[0];for(const i of f){b[i]="X";const v=mm(b,"O",1);b[i]=null;if(v>best){best=v;mv=i}}return mv;
+  };
+  const draw=()=>{$("#xb").innerHTML=b.map((v,i)=>`<button class="xc${v?" "+v:""}" data-i="${i}" aria-label="칸 ${i+1}">${v==="O"?"○":v==="X"?"✕":""}</button>`).join("")};
+  const newRound=()=>{b=Array(9).fill(null);draw();if(first){turn="O";$("#xm").textContent="당신 차례 (○)"}else{$("#xm").textContent="컴퓨터가 먼저 둬요";aiMove()}};
+  const finishRound=res=>{
+    games++;$("#xn").textContent=games;
+    if(res==="X"){over=true;sfx("lose");$("#xm").textContent=`졌어요! 총 ${score}점`;$("#xr").hidden=false;if(score>0)saveScore("ttt",score);return}
+    if(res==="O"){score+=3;$("#xm").textContent="이겼어요! +3점";sfx("good")}else{score+=1;$("#xm").textContent="비겼어요 +1점";sfx("tick")}
+    $("#xs").textContent=score;first=!first;turn="-";timers.push(setTimeout(newRound,900));
+  };
+  const check=()=>{if(win(b,"O")){finishRound("O");return true}if(win(b,"X")){finishRound("X");return true}if(!free(b).length){finishRound("D");return true}return false};
+  const aiMove=()=>{turn="X";timers.push(setTimeout(()=>{b[ai()]="X";draw();if(!check()){turn="O";$("#xm").textContent="당신 차례 (○)"}},350))};
+  $("#xb").addEventListener("click",e=>{const c=e.target.closest(".xc");if(!c||over||turn!=="O")return;const i=+c.dataset.i;if(b[i])return;b[i]="O";sfx("tick");draw();if(!check())aiMove()});
+  $("#xr").onclick=()=>{score=0;games=0;over=false;first=true;$("#xs").textContent=0;$("#xn").textContent=0;$("#xr").hidden=true;newRound()};
+  newRound();
+  return ()=>timers.forEach(clearTimeout);
 }
 
 /* ---------- 라우터 (화면 전환) ---------- */
-const RUN={reaction,snake,g2048,memory,tetris,mines,mole,typing,breakout,runner,seq,num,aim,math,klondike,freecell,blackjack,hilo};
+const RUN={reaction,snake,g2048,memory,tetris,mines,mole,typing,breakout,runner,seq,num,aim,math,klondike,freecell,blackjack,hilo,slide,flappy,stroop,oddcolor,ttt};
 function restart(){if(!current)return;cleanup&&cleanup();cleanup=RUN[current]()}
 function route(){
   const k=(location.hash||"").slice(1);const next=GAMES[k]?k:"reaction";
